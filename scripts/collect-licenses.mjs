@@ -12,6 +12,8 @@ const packages = [
   "@fix-webm-duration/fix",
   "@fix-webm-duration/parser",
   "tslib",
+  "mediabunny",
+  "@noble/hashes",
 ];
 const sections = [];
 for (const name of packages) {
@@ -37,7 +39,7 @@ for (const name of packages) {
   }
   if (!license) throw new Error(`No license text found for ${name}`);
   sections.push(
-    `${name} ${metadata.version}\n${"=".repeat(60)}\n\n${license.trim()}\n`,
+    `${name} ${metadata.version}\n${"=".repeat(60)}\n${name === "mediabunny" ? `Source (MPL-2.0): https://github.com/Vanilagy/mediabunny/tree/v${metadata.version}\nTakeLab uses this library unmodified.\n` : ""}\n${license.trim()}\n`,
   );
 }
 await writeFile(

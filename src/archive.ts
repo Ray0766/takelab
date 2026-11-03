@@ -3,6 +3,7 @@ import { parseProject, timecode } from "./model";
 import type { Project } from "./model";
 import { readMedia } from "./storage";
 import { demoUrl } from "./media";
+import { hashBlob, validateFrameBlob } from "./evidence";
 
 const LIMIT = 512 * 1024 * 1024;
 const escape = (s: string) =>
@@ -21,6 +22,7 @@ export function reportMarkdown(p: Project) {
     `Project ID: ${escape(p.id)}`,
     "",
     `Review timebase: ${p.fps} fps. Marker times refer to the original source, before the review offset. Costs are entered manually in USD.`,
+    "Source-frame images are included in project ZIP exports; image links in this record resolve relative to that archive.",
     "",
   ];
   for (const shot of p.shots) {
@@ -58,6 +60,11 @@ export function reportMarkdown(p: Project) {
           `- [${escape(take.name)}](#take-${take.id}) · source ${marker.time.toFixed(3)} s (${timecode(marker.time, p.fps)}) · review ${marker.time >= take.offset ? `${(marker.time - take.offset).toFixed(3)} s` : "before offset"} · [${marker.kind}] ${escape(marker.text)}`,
           `  - Evidence ID: ${take.id}/${marker.id}`,
           `  - [Generation record](#take-${take.id})`,
+          ...(marker.frame
+            ? [
+                `  - [Source-frame evidence](evidence/${marker.frame.id}.png) · PTS ${marker.frame.ptsUs} µs · track ${marker.frame.trackId} · source SHA-256 ${marker.frame.sourceHash}`,
+              ]
+            : []),
           "",
         );
       }
@@ -74,6 +81,12 @@ export function reportMarkdown(p: Project) {
         `- Original filename: ${escape(t.name)}; ${t.size} bytes`,
         `- Source: ${t.width} × ${t.height}, ${t.duration.toFixed(3)} s`,
         `- Review offset: ${t.offset.toFixed(3)} s`,
+        ...(t.sourceHash ? [`- Source SHA-256: ${t.sourceHash}`] : []),
+        ...(t.anchor
+          ? [
+              `- Action anchor: ${escape(t.anchor.label)} · source ${(t.anchor.ptsUs / 1e6).toFixed(6)} s · track ${t.anchor.trackId}`,
+            ]
+          : []),
         `- Model: ${escape(t.model || "Not recorded")}`,
         `- Seed: ${escape(t.seed || "Not recorded")}`,
         `- Cost (USD): ${t.cost === null ? "Not recorded" : t.cost.toFixed(2)}`,
@@ -97,10 +110,16 @@ export function reportMarkdown(p: Project) {
         ...(t.markers.length
           ? [...t.markers]
               .sort((a, b) => a.time - b.time)
-              .map(
-                (m) =>
-                  `- ${timecode(m.time, p.fps)} (${m.time.toFixed(3)} s) [${m.kind}] ${escape(m.text)} · Marker ID: ${m.id}`,
-              )
+              .flatMap((m) => [
+                `- ${timecode(m.time, p.fps)} (${m.time.toFixed(3)} s) [${m.kind}] ${escape(m.text)} · Marker ID: ${m.id}`,
+                ...(m.frame
+                  ? [
+                      `  - Source PTS: ${m.frame.ptsUs} µs; track ${m.frame.trackId}; presentation frame ${m.frame.frameIndex + 1}`,
+                      `  - PNG SHA-256: ${m.frame.pngHash}; captured ${escape(m.frame.createdAt)}; ${m.frame.width} × ${m.frame.height}`,
+                      `  - ![Source-frame evidence](evidence/${m.frame.id}.png)`,
+                    ]
+                  : []),
+              ])
           : ["No markers."]),
         "",
       );
@@ -141,6 +160,10 @@ export async function exportArchive(
         throw new Error(
           `Missing source: ${t.name}. Relink it first or export without videos.`,
         );
+      if (t.sourceHash && (await hashBlob(blob)) !== t.sourceHash)
+        throw new Error(
+          `Source fingerprint mismatch: ${t.name}. The original frame evidence must not be attached to a different file.`,
+        );
       await append(`media/${t.id}`, blob);
     }
     for (const r of t.references) {
@@ -150,6 +173,16 @@ export async function exportArchive(
           `Missing reference image: ${r.name}. Relink or remove it before exporting a backup.`,
         );
       await append(`refs/${r.id}`, blob);
+    }
+    for (const marker of t.markers) {
+      if (!marker.frame) continue;
+      const blob = await readMedia(marker.frame.id);
+      if (!blob)
+        throw new Error(
+          `Missing evidence image for ${t.name}. Restore a complete backup or remove the affected marker.`,
+        );
+      await validateFrameBlob(blob, marker.frame);
+      await append(`evidence/${marker.frame.id}.png`, blob);
     }
   }
   return new Promise<Blob>((resolve, reject) =>
@@ -185,7 +218,8 @@ export async function importArchive(
         throw new Error("Project record is too large.");
       return (
         entry.name === "project.json" ||
-        /^(media|refs)\/[\w-]+$/.test(entry.name)
+        /^(media|refs)\/[\w-]+$/.test(entry.name) ||
+        /^evidence\/[\w-]+\.png$/.test(entry.name)
       );
     },
   });
@@ -209,6 +243,28 @@ export async function importArchive(
             type: ref.type,
           }),
         );
+    const source = media.get(take.id);
+    if (
+      source &&
+      take.sourceHash &&
+      (await hashBlob(source)) !== take.sourceHash
+    )
+      throw new Error(
+        `Source fingerprint mismatch: ${take.name}. Existing project is unchanged.`,
+      );
+    for (const marker of take.markers) {
+      if (!marker.frame) continue;
+      const bytes = files[`evidence/${marker.frame.id}.png`];
+      if (!bytes)
+        throw new Error(
+          `Missing source-frame evidence for ${take.name}. Existing project is unchanged.`,
+        );
+      const blob = new Blob([bytes as Uint8Array<ArrayBuffer>], {
+        type: "image/png",
+      });
+      await validateFrameBlob(blob, marker.frame);
+      media.set(marker.frame.id, blob);
+    }
   }
   return { project, media };
 }

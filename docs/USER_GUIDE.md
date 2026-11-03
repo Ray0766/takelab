@@ -16,7 +16,19 @@ Records start closed. Use **Details** to open or hide the record panel without r
 
 标记时间始终相对于源视频，和起始偏移无关。例如偏移为 2 秒，评审时间 1 秒添加的标记记录为素材时间 3 秒。调整偏移不会改变旧标记；偏移之前的标记无法在当前对比区间回看，请先减小偏移。
 
-**Frame precision:** select a review FPS (12/24/25/30/50/60) to define the stepping interval and timecode. This is a nominal review timebase. HTML video seeking is not frame-exact, and TakeLab does not extract a source frame index. Comparison recording is real time and can lose frames under heavy decoding/encoding load. Use your editor and original sources for final mastering.
+**Overview precision:** select a review FPS (12/24/25/30/50/60) to define the nominal stepping interval and timecode. HTML video seeking and comparison recording are not frame locked. Use **Inspect frames** for actual source-frame navigation, and your editor and original sources for final mastering.
+
+### Inspect source frames / 检查源帧
+
+Select a take and open **Inspect frames**. Choose a second take or choose **Single source** in Source B. Both views wait for decoding before accepting a screenshot; rapid seeks discard obsolete results. The arrows step the active source's actual frame sequence. The partner shows its last frame at or before the offset-adjusted review time. At different frame rates, different PTS values are expected. Clicking a picture sets the center for linked 100/200/400% zoom. Inspection is silent; the paused overview remains underneath.
+
+**Align action:** find the same event independently in A and B, set both anchors, name the event and apply. Review time zero now corresponds to those two original moments. This changes start offsets, not playback speed or the motion itself. **Undo alignment** restores the previous offsets during the current inspection session. Editing a numerical offset later clears its inconsistent anchor; screenshots retain their original source times. Matching an action is your judgment, not an automatic model result.
+
+**Save frame evidence:** choose the source, write an observation and save. The PNG always contains the complete decoded display-oriented frame, even while zoomed. It is stored atomically with its marker, source PTS, track, frame sequence index, source SHA-256 and PNG SHA-256. A current winner's decision automatically receives the new reference; without a winner, link the marker later in **Decision**. **Decision & record** returns to the rationale and generation records. The marker thumbnail opens the verified PNG; **Inspect original frame** reopens its actual source time, including times before the current review offset.
+
+选择版本后打开 **检查源帧**。用 **对齐动作** 分别设置同一事件的两个锚点；使用方向键查看真实源帧，放大后填写观察并 **保存源帧证据**。截图始终保存完整画面。已有选定成片时，新证据自动关联到本镜头的依据；否则可稍后在 **选片依据** 勾选。**选片依据与记录** 返回理由和提示词。早于当前偏移的截图标记也可直接回看原帧。
+
+The first implementation supports SDR and browser-decodable MP4/WebM/Matroska, at most two sources of 2 GiB / 60,000 video packets / 4096×2160 pixels each (portrait supported). Unusual nonzero starting timelines, duplicate PTS, unsupported codecs and HDR are rejected explicitly. Use **Inspect A only** if the partner is missing or unsupported, or return to native overview playback. No file conversion or paid API is involved. Large-file hashing and decoder initialization may take time; closing inspection terminates its workers. Individual commands time out after 60 seconds for opening / 15 seconds for a frame.
 
 ## Decide and annotate / 评选与标记
 
@@ -42,7 +54,9 @@ Prompt, model/source, seed, negative prompt, settings and cost are optional. Unk
 
 The project menu can open a ZIP, load the demo or create a new project. These replace the active workspace after confirmation when it contains takes. Export first if you need to keep it. Full backup restore replaces records and blobs in one IndexedDB transaction; a failed transaction keeps the old workspace intact.
 
-只导出记录的 ZIP 不包含视频，恢复后卡片会显示“重新关联视频”。选择原视频即可保留评选、提示词、标记与依据。名称、大小、时长或分辨率不符会拒绝关联，请将不同素材作为新版本导入。此检查不是内容哈希，不能识别所有同名、同大小的内容替换。
+只导出记录的 ZIP 不包含视频，但始终包含参考图和证据截图；恢复后仍能看截图，检查相邻原帧则需重新关联视频。名称、大小、时长或分辨率不符会拒绝关联。已有源帧证据或动作锚点的素材还会检查 SHA-256；从未创建过这两类记录的旧素材仍只有元数据检查。不同素材应作为新版本导入。旧版 TakeLab 能打开 schema-1 文件，但重新导出可能丢弃新增证据字段，请使用当前版本恢复。
+
+Standalone Markdown exports include relative PNG links; share the extracted ZIP folder to keep those links usable. Source and image hashes detect changed bytes against the saved record, not a maliciously rewritten record or a cryptographic proof of authorship. Back up originals as well as the ZIP.
 
 ## Troubleshooting / 故障处理
 

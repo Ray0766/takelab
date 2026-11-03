@@ -1,0 +1,1726 @@
+{
+  "date": "2026-11-03T11:30:19.717Z",
+  "browser": "156.0.8078.4",
+  "node": "v24.18.0",
+  "library": {
+    "name": "mediabunny",
+    "version": "1.65.0",
+    "license": "MPL-2.0",
+    "bundleBytes": 1560416,
+    "bundleSha256": "65a111aadcb9a8b45e585f128d11daf3c972289bf6c58b2e795ba6073ee13363"
+  },
+  "capabilities": {
+    "videoDecoder": true,
+    "offscreenCanvas": true,
+    "webgpu": true,
+    "opfs": true,
+    "mediaCapabilities": {
+      "supported": true,
+      "smooth": true,
+      "powerEfficient": false
+    }
+  },
+  "protocol": "Two original 640x360 H.264 clips. CFR 30fps and VFR 30->10fps, B-frames, 20 nonmonotonic queries each. Expected frame = last FFprobe PTS <= query. Binary pixels verify frame identity. One decoder, hot local Blob; native includes callback/compositor wait, worker ends at offscreen readback. Latencies are not equivalent playback measurements.",
+  "results": [
+    {
+      "name": "cfr",
+      "codec": "avc1.64001e",
+      "supported": true,
+      "truth": [
+        {
+          "pts": 0,
+          "originalFrame": 0,
+          "type": "I"
+        },
+        {
+          "pts": 0.033333,
+          "originalFrame": 1,
+          "type": "P"
+        },
+        {
+          "pts": 0.066667,
+          "originalFrame": 2,
+          "type": "P"
+        },
+        {
+          "pts": 0.1,
+          "originalFrame": 3,
+          "type": "B"
+        },
+        {
+          "pts": 0.133333,
+          "originalFrame": 4,
+          "type": "P"
+        },
+        {
+          "pts": 0.166667,
+          "originalFrame": 5,
+          "type": "P"
+        },
+        {
+          "pts": 0.2,
+          "originalFrame": 6,
+          "type": "B"
+        },
+        {
+          "pts": 0.233333,
+          "originalFrame": 7,
+          "type": "B"
+        },
+        {
+          "pts": 0.266667,
+          "originalFrame": 8,
+          "type": "P"
+        },
+        {
+          "pts": 0.3,
+          "originalFrame": 9,
+          "type": "P"
+        },
+        {
+          "pts": 0.333333,
+          "originalFrame": 10,
+          "type": "P"
+        },
+        {
+          "pts": 0.366667,
+          "originalFrame": 11,
+          "type": "B"
+        },
+        {
+          "pts": 0.4,
+          "originalFrame": 12,
+          "type": "B"
+        },
+        {
+          "pts": 0.433333,
+          "originalFrame": 13,
+          "type": "P"
+        },
+        {
+          "pts": 0.466667,
+          "originalFrame": 14,
+          "type": "B"
+        },
+        {
+          "pts": 0.5,
+          "originalFrame": 15,
+          "type": "P"
+        },
+        {
+          "pts": 0.533333,
+          "originalFrame": 16,
+          "type": "P"
+        },
+        {
+          "pts": 0.566667,
+          "originalFrame": 17,
+          "type": "P"
+        },
+        {
+          "pts": 0.6,
+          "originalFrame": 18,
+          "type": "B"
+        },
+        {
+          "pts": 0.633333,
+          "originalFrame": 19,
+          "type": "P"
+        },
+        {
+          "pts": 0.666667,
+          "originalFrame": 20,
+          "type": "B"
+        },
+        {
+          "pts": 0.7,
+          "originalFrame": 21,
+          "type": "P"
+        },
+        {
+          "pts": 0.733333,
+          "originalFrame": 22,
+          "type": "B"
+        },
+        {
+          "pts": 0.766667,
+          "originalFrame": 23,
+          "type": "P"
+        },
+        {
+          "pts": 0.8,
+          "originalFrame": 24,
+          "type": "B"
+        },
+        {
+          "pts": 0.833333,
+          "originalFrame": 25,
+          "type": "P"
+        },
+        {
+          "pts": 0.866667,
+          "originalFrame": 26,
+          "type": "B"
+        },
+        {
+          "pts": 0.9,
+          "originalFrame": 27,
+          "type": "P"
+        },
+        {
+          "pts": 0.933333,
+          "originalFrame": 28,
+          "type": "B"
+        },
+        {
+          "pts": 0.966667,
+          "originalFrame": 29,
+          "type": "P"
+        },
+        {
+          "pts": 1,
+          "originalFrame": 30,
+          "type": "B"
+        },
+        {
+          "pts": 1.033333,
+          "originalFrame": 31,
+          "type": "P"
+        },
+        {
+          "pts": 1.066667,
+          "originalFrame": 32,
+          "type": "P"
+        },
+        {
+          "pts": 1.1,
+          "originalFrame": 33,
+          "type": "P"
+        },
+        {
+          "pts": 1.133333,
+          "originalFrame": 34,
+          "type": "B"
+        },
+        {
+          "pts": 1.166667,
+          "originalFrame": 35,
+          "type": "P"
+        },
+        {
+          "pts": 1.2,
+          "originalFrame": 36,
+          "type": "B"
+        },
+        {
+          "pts": 1.233333,
+          "originalFrame": 37,
+          "type": "P"
+        },
+        {
+          "pts": 1.266667,
+          "originalFrame": 38,
+          "type": "B"
+        },
+        {
+          "pts": 1.3,
+          "originalFrame": 39,
+          "type": "P"
+        },
+        {
+          "pts": 1.333333,
+          "originalFrame": 40,
+          "type": "B"
+        },
+        {
+          "pts": 1.366667,
+          "originalFrame": 41,
+          "type": "P"
+        },
+        {
+          "pts": 1.4,
+          "originalFrame": 42,
+          "type": "B"
+        },
+        {
+          "pts": 1.433333,
+          "originalFrame": 43,
+          "type": "P"
+        },
+        {
+          "pts": 1.466667,
+          "originalFrame": 44,
+          "type": "B"
+        },
+        {
+          "pts": 1.5,
+          "originalFrame": 45,
+          "type": "P"
+        },
+        {
+          "pts": 1.533333,
+          "originalFrame": 46,
+          "type": "B"
+        },
+        {
+          "pts": 1.566667,
+          "originalFrame": 47,
+          "type": "P"
+        },
+        {
+          "pts": 1.6,
+          "originalFrame": 48,
+          "type": "B"
+        },
+        {
+          "pts": 1.633333,
+          "originalFrame": 49,
+          "type": "P"
+        },
+        {
+          "pts": 1.666667,
+          "originalFrame": 50,
+          "type": "B"
+        },
+        {
+          "pts": 1.7,
+          "originalFrame": 51,
+          "type": "P"
+        },
+        {
+          "pts": 1.733333,
+          "originalFrame": 52,
+          "type": "B"
+        },
+        {
+          "pts": 1.766667,
+          "originalFrame": 53,
+          "type": "P"
+        },
+        {
+          "pts": 1.8,
+          "originalFrame": 54,
+          "type": "P"
+        },
+        {
+          "pts": 1.833333,
+          "originalFrame": 55,
+          "type": "P"
+        },
+        {
+          "pts": 1.866667,
+          "originalFrame": 56,
+          "type": "B"
+        },
+        {
+          "pts": 1.9,
+          "originalFrame": 57,
+          "type": "P"
+        },
+        {
+          "pts": 1.933333,
+          "originalFrame": 58,
+          "type": "P"
+        },
+        {
+          "pts": 1.966667,
+          "originalFrame": 59,
+          "type": "P"
+        }
+      ],
+      "decoded": {
+        "samples": [
+          {
+            "requested": 0.01,
+            "pts": 0,
+            "duration": 0.03333333333333333,
+            "code": 0,
+            "elapsedMs": 7.099999964237213,
+            "expected": {
+              "pts": 0,
+              "originalFrame": 0,
+              "type": "I"
+            },
+            "matches": true
+          },
+          {
+            "requested": 1.555,
+            "pts": 1.5333333333333334,
+            "duration": 0.03333333333333333,
+            "code": 46,
+            "elapsedMs": 6.300000011920929,
+            "expected": {
+              "pts": 1.533333,
+              "originalFrame": 46,
+              "type": "B"
+            },
+            "matches": true
+          },
+          {
+            "requested": 0.032,
+            "pts": 0,
+            "duration": 0.03333333333333333,
+            "code": 0,
+            "elapsedMs": 1.699999988079071,
+            "expected": {
+              "pts": 0,
+              "originalFrame": 0,
+              "type": "I"
+            },
+            "matches": true
+          },
+          {
+            "requested": 1.099,
+            "pts": 1.0666666666666667,
+            "duration": 0.03333333333333333,
+            "code": 32,
+            "elapsedMs": 4.899999976158142,
+            "expected": {
+              "pts": 1.066667,
+              "originalFrame": 32,
+              "type": "P"
+            },
+            "matches": true
+          },
+          {
+            "requested": 0.034,
+            "pts": 0.03333333333333333,
+            "duration": 0.03333333333333333,
+            "code": 1,
+            "elapsedMs": 2.100000023841858,
+            "expected": {
+              "pts": 0.033333,
+              "originalFrame": 1,
+              "type": "P"
+            },
+            "matches": true
+          },
+          {
+            "requested": 1.101,
+            "pts": 1.1,
+            "duration": 0.03333333333333333,
+            "code": 33,
+            "elapsedMs": 4.599999964237213,
+            "expected": {
+              "pts": 1.1,
+              "originalFrame": 33,
+              "type": "P"
+            },
+            "matches": true
+          },
+          {
+            "requested": 0.998,
+            "pts": 0.9666666666666667,
+            "duration": 0.03333333333333333,
+            "code": 29,
+            "elapsedMs": 4.200000047683716,
+            "expected": {
+              "pts": 0.966667,
+              "originalFrame": 29,
+              "type": "P"
+            },
+            "matches": true
+          },
+          {
+            "requested": 1.001,
+            "pts": 1,
+            "duration": 0.03333333333333333,
+            "code": 30,
+            "elapsedMs": 4.5,
+            "expected": {
+              "pts": 1,
+              "originalFrame": 30,
+              "type": "B"
+            },
+            "matches": true
+          },
+          {
+            "requested": 1.032,
+            "pts": 1,
+            "duration": 0.03333333333333333,
+            "code": 30,
+            "elapsedMs": 4.199999988079071,
+            "expected": {
+              "pts": 1,
+              "originalFrame": 30,
+              "type": "B"
+            },
+            "matches": true
+          },
+          {
+            "requested": 1.065,
+            "pts": 1.0333333333333334,
+            "duration": 0.03333333333333333,
+            "code": 31,
+            "elapsedMs": 4.300000011920929,
+            "expected": {
+              "pts": 1.033333,
+              "originalFrame": 31,
+              "type": "P"
+            },
+            "matches": true
+          },
+          {
+            "requested": 0.5,
+            "pts": 0.5,
+            "duration": 0.03333333333333333,
+            "code": 15,
+            "elapsedMs": 2.899999976158142,
+            "expected": {
+              "pts": 0.5,
+              "originalFrame": 15,
+              "type": "P"
+            },
+            "matches": true
+          },
+          {
+            "requested": 1.899,
+            "pts": 1.8666666666666667,
+            "duration": 0.03333333333333333,
+            "code": 56,
+            "elapsedMs": 6.100000023841858,
+            "expected": {
+              "pts": 1.866667,
+              "originalFrame": 56,
+              "type": "B"
+            },
+            "matches": true
+          },
+          {
+            "requested": 0.967,
+            "pts": 0.9666666666666667,
+            "duration": 0.03333333333333333,
+            "code": 29,
+            "elapsedMs": 4.099999964237213,
+            "expected": {
+              "pts": 0.966667,
+              "originalFrame": 29,
+              "type": "P"
+            },
+            "matches": true
+          },
+          {
+            "requested": 0.965,
+            "pts": 0.9333333333333333,
+            "duration": 0.03333333333333333,
+            "code": 28,
+            "elapsedMs": 4.100000023841858,
+            "expected": {
+              "pts": 0.933333,
+              "originalFrame": 28,
+              "type": "B"
+            },
+            "matches": true
+          },
+          {
+            "requested": 1.201,
+            "pts": 1.2,
+            "duration": 0.03333333333333333,
+            "code": 36,
+            "elapsedMs": 4.199999988079071,
+            "expected": {
+              "pts": 1.2,
+              "originalFrame": 36,
+              "type": "B"
+            },
+            "matches": true
+          },
+          {
+            "requested": 1.199,
+            "pts": 1.1666666666666667,
+            "duration": 0.03333333333333333,
+            "code": 35,
+            "elapsedMs": 4.199999988079071,
+            "expected": {
+              "pts": 1.166667,
+              "originalFrame": 35,
+              "type": "P"
+            },
+            "matches": true
+          },
+          {
+            "requested": 0.101,
+            "pts": 0.1,
+            "duration": 0.03333333333333333,
+            "code": 3,
+            "elapsedMs": 1.699999988079071,
+            "expected": {
+              "pts": 0.1,
+              "originalFrame": 3,
+              "type": "B"
+            },
+            "matches": true
+          },
+          {
+            "requested": 0.099,
+            "pts": 0.06666666666666667,
+            "duration": 0.03333333333333333,
+            "code": 2,
+            "elapsedMs": 1.699999988079071,
+            "expected": {
+              "pts": 0.066667,
+              "originalFrame": 2,
+              "type": "P"
+            },
+            "matches": true
+          },
+          {
+            "requested": 1.501,
+            "pts": 1.5,
+            "duration": 0.03333333333333333,
+            "code": 45,
+            "elapsedMs": 5,
+            "expected": {
+              "pts": 1.5,
+              "originalFrame": 45,
+              "type": "P"
+            },
+            "matches": true
+          },
+          {
+            "requested": 1.499,
+            "pts": 1.4666666666666666,
+            "duration": 0.03333333333333333,
+            "code": 44,
+            "elapsedMs": 5,
+            "expected": {
+              "pts": 1.466667,
+              "originalFrame": 44,
+              "type": "B"
+            },
+            "matches": true
+          }
+        ],
+        "summary": {
+          "matched": 20,
+          "total": 20,
+          "medianMs": 4.200000047683716,
+          "p95Ms": 6.300000011920929
+        },
+        "sequential": [
+          0,
+          0.03333333333333333,
+          0.06666666666666667,
+          0.1,
+          0.13333333333333333,
+          0.16666666666666666,
+          0.2,
+          0.23333333333333334,
+          0.26666666666666666,
+          0.3,
+          0.3333333333333333,
+          0.36666666666666664,
+          0.4,
+          0.43333333333333335,
+          0.4666666666666667,
+          0.5,
+          0.5333333333333333,
+          0.5666666666666667,
+          0.6,
+          0.6333333333333333,
+          0.6666666666666666,
+          0.7,
+          0.7333333333333333,
+          0.7666666666666667,
+          0.8,
+          0.8333333333333334,
+          0.8666666666666667,
+          0.9,
+          0.9333333333333333,
+          0.9666666666666667,
+          1,
+          1.0333333333333334,
+          1.0666666666666667,
+          1.1,
+          1.1333333333333333,
+          1.1666666666666667,
+          1.2,
+          1.2333333333333334,
+          1.2666666666666666,
+          1.3,
+          1.3333333333333333,
+          1.3666666666666667,
+          1.4,
+          1.4333333333333333,
+          1.4666666666666666,
+          1.5,
+          1.5333333333333334,
+          1.5666666666666667,
+          1.6,
+          1.6333333333333333,
+          1.6666666666666667,
+          1.7,
+          1.7333333333333334,
+          1.7666666666666666,
+          1.8,
+          1.8333333333333333,
+          1.8666666666666667,
+          1.9,
+          1.9333333333333333,
+          1.9666666666666666
+        ],
+        "sequentialMatches": true
+      },
+      "native": {
+        "samples": [
+          {
+            "requested": 0.01,
+            "currentTime": 0.01,
+            "presented": 0,
+            "code": 0,
+            "elapsedMs": 4.300000011920929,
+            "expected": {
+              "pts": 0,
+              "originalFrame": 0,
+              "type": "I"
+            },
+            "matches": true
+          },
+          {
+            "requested": 1.555,
+            "currentTime": 1.555,
+            "presented": 1.533333,
+            "code": 46,
+            "elapsedMs": 15.699999988079071,
+            "expected": {
+              "pts": 1.533333,
+              "originalFrame": 46,
+              "type": "B"
+            },
+            "matches": true
+          },
+          {
+            "requested": 0.032,
+            "currentTime": 0.032,
+            "presented": 0,
+            "code": 0,
+            "elapsedMs": 17.80000001192093,
+            "expected": {
+              "pts": 0,
+              "originalFrame": 0,
+              "type": "I"
+            },
+            "matches": true
+          },
+          {
+            "requested": 1.099,
+            "currentTime": 1.099,
+            "presented": 1.066667,
+            "code": 32,
+            "elapsedMs": 16.30000001192093,
+            "expected": {
+              "pts": 1.066667,
+              "originalFrame": 32,
+              "type": "P"
+            },
+            "matches": true
+          },
+          {
+            "requested": 0.034,
+            "currentTime": 0.034,
+            "presented": 0.033333,
+            "code": 1,
+            "elapsedMs": 16.19999998807907,
+            "expected": {
+              "pts": 0.033333,
+              "originalFrame": 1,
+              "type": "P"
+            },
+            "matches": true
+          },
+          {
+            "requested": 1.101,
+            "currentTime": 1.101,
+            "presented": 1.1,
+            "code": 33,
+            "elapsedMs": 16.80000001192093,
+            "expected": {
+              "pts": 1.1,
+              "originalFrame": 33,
+              "type": "P"
+            },
+            "matches": true
+          },
+          {
+            "requested": 0.998,
+            "currentTime": 0.998,
+            "presented": 0.966667,
+            "code": 29,
+            "elapsedMs": 16.80000001192093,
+            "expected": {
+              "pts": 0.966667,
+              "originalFrame": 29,
+              "type": "P"
+            },
+            "matches": true
+          },
+          {
+            "requested": 1.001,
+            "currentTime": 1.000999,
+            "presented": 1,
+            "code": 30,
+            "elapsedMs": 16.5,
+            "expected": {
+              "pts": 1,
+              "originalFrame": 30,
+              "type": "B"
+            },
+            "matches": true
+          },
+          {
+            "requested": 1.032,
+            "currentTime": 1.032,
+            "presented": 1,
+            "code": 30,
+            "elapsedMs": 18,
+            "expected": {
+              "pts": 1,
+              "originalFrame": 30,
+              "type": "B"
+            },
+            "matches": true
+          },
+          {
+            "requested": 1.065,
+            "currentTime": 1.065,
+            "presented": 1.033333,
+            "code": 31,
+            "elapsedMs": 15,
+            "expected": {
+              "pts": 1.033333,
+              "originalFrame": 31,
+              "type": "P"
+            },
+            "matches": true
+          },
+          {
+            "requested": 0.5,
+            "currentTime": 0.5,
+            "presented": 0.5,
+            "code": 15,
+            "elapsedMs": 16.899999976158142,
+            "expected": {
+              "pts": 0.5,
+              "originalFrame": 15,
+              "type": "P"
+            },
+            "matches": true
+          },
+          {
+            "requested": 1.899,
+            "currentTime": 1.899,
+            "presented": 1.866667,
+            "code": 56,
+            "elapsedMs": 16.399999976158142,
+            "expected": {
+              "pts": 1.866667,
+              "originalFrame": 56,
+              "type": "B"
+            },
+            "matches": true
+          },
+          {
+            "requested": 0.967,
+            "currentTime": 0.967,
+            "presented": 0.966667,
+            "code": 29,
+            "elapsedMs": 17.700000047683716,
+            "expected": {
+              "pts": 0.966667,
+              "originalFrame": 29,
+              "type": "P"
+            },
+            "matches": true
+          },
+          {
+            "requested": 0.965,
+            "currentTime": 0.965,
+            "presented": 0.933333,
+            "code": 28,
+            "elapsedMs": 16.899999976158142,
+            "expected": {
+              "pts": 0.933333,
+              "originalFrame": 28,
+              "type": "B"
+            },
+            "matches": true
+          },
+          {
+            "requested": 1.201,
+            "currentTime": 1.201,
+            "presented": 1.2,
+            "code": 36,
+            "elapsedMs": 15.399999976158142,
+            "expected": {
+              "pts": 1.2,
+              "originalFrame": 36,
+              "type": "B"
+            },
+            "matches": true
+          },
+          {
+            "requested": 1.199,
+            "currentTime": 1.199,
+            "presented": 1.166667,
+            "code": 35,
+            "elapsedMs": 17.30000001192093,
+            "expected": {
+              "pts": 1.166667,
+              "originalFrame": 35,
+              "type": "P"
+            },
+            "matches": true
+          },
+          {
+            "requested": 0.101,
+            "currentTime": 0.101,
+            "presented": 0.1,
+            "code": 3,
+            "elapsedMs": 16.900000035762787,
+            "expected": {
+              "pts": 0.1,
+              "originalFrame": 3,
+              "type": "B"
+            },
+            "matches": true
+          },
+          {
+            "requested": 0.099,
+            "currentTime": 0.099,
+            "presented": 0.066667,
+            "code": 2,
+            "elapsedMs": 15.799999952316284,
+            "expected": {
+              "pts": 0.066667,
+              "originalFrame": 2,
+              "type": "P"
+            },
+            "matches": true
+          },
+          {
+            "requested": 1.501,
+            "currentTime": 1.501,
+            "presented": 1.5,
+            "code": 45,
+            "elapsedMs": 18.100000023841858,
+            "expected": {
+              "pts": 1.5,
+              "originalFrame": 45,
+              "type": "P"
+            },
+            "matches": true
+          },
+          {
+            "requested": 1.499,
+            "currentTime": 1.499,
+            "presented": 1.466667,
+            "code": 44,
+            "elapsedMs": 15.199999988079071,
+            "expected": {
+              "pts": 1.466667,
+              "originalFrame": 44,
+              "type": "B"
+            },
+            "matches": true
+          }
+        ],
+        "summary": {
+          "matched": 20,
+          "total": 20,
+          "medianMs": 16.80000001192093,
+          "p95Ms": 18
+        }
+      }
+    },
+    {
+      "name": "vfr",
+      "codec": "avc1.64001e",
+      "supported": true,
+      "truth": [
+        {
+          "pts": 0,
+          "originalFrame": 0,
+          "type": "I"
+        },
+        {
+          "pts": 0.033333,
+          "originalFrame": 1,
+          "type": "P"
+        },
+        {
+          "pts": 0.066667,
+          "originalFrame": 2,
+          "type": "P"
+        },
+        {
+          "pts": 0.1,
+          "originalFrame": 3,
+          "type": "B"
+        },
+        {
+          "pts": 0.133333,
+          "originalFrame": 4,
+          "type": "P"
+        },
+        {
+          "pts": 0.166667,
+          "originalFrame": 5,
+          "type": "P"
+        },
+        {
+          "pts": 0.2,
+          "originalFrame": 6,
+          "type": "B"
+        },
+        {
+          "pts": 0.233333,
+          "originalFrame": 7,
+          "type": "B"
+        },
+        {
+          "pts": 0.266667,
+          "originalFrame": 8,
+          "type": "P"
+        },
+        {
+          "pts": 0.3,
+          "originalFrame": 9,
+          "type": "P"
+        },
+        {
+          "pts": 0.333333,
+          "originalFrame": 10,
+          "type": "P"
+        },
+        {
+          "pts": 0.366667,
+          "originalFrame": 11,
+          "type": "B"
+        },
+        {
+          "pts": 0.4,
+          "originalFrame": 12,
+          "type": "B"
+        },
+        {
+          "pts": 0.433333,
+          "originalFrame": 13,
+          "type": "P"
+        },
+        {
+          "pts": 0.466667,
+          "originalFrame": 14,
+          "type": "B"
+        },
+        {
+          "pts": 0.5,
+          "originalFrame": 15,
+          "type": "P"
+        },
+        {
+          "pts": 0.533333,
+          "originalFrame": 16,
+          "type": "P"
+        },
+        {
+          "pts": 0.566667,
+          "originalFrame": 17,
+          "type": "P"
+        },
+        {
+          "pts": 0.6,
+          "originalFrame": 18,
+          "type": "B"
+        },
+        {
+          "pts": 0.633333,
+          "originalFrame": 19,
+          "type": "P"
+        },
+        {
+          "pts": 0.666667,
+          "originalFrame": 20,
+          "type": "B"
+        },
+        {
+          "pts": 0.7,
+          "originalFrame": 21,
+          "type": "P"
+        },
+        {
+          "pts": 0.733333,
+          "originalFrame": 22,
+          "type": "B"
+        },
+        {
+          "pts": 0.766667,
+          "originalFrame": 23,
+          "type": "P"
+        },
+        {
+          "pts": 0.8,
+          "originalFrame": 24,
+          "type": "B"
+        },
+        {
+          "pts": 0.833333,
+          "originalFrame": 25,
+          "type": "P"
+        },
+        {
+          "pts": 0.866667,
+          "originalFrame": 26,
+          "type": "B"
+        },
+        {
+          "pts": 0.9,
+          "originalFrame": 27,
+          "type": "P"
+        },
+        {
+          "pts": 0.933333,
+          "originalFrame": 28,
+          "type": "B"
+        },
+        {
+          "pts": 0.966667,
+          "originalFrame": 29,
+          "type": "P"
+        },
+        {
+          "pts": 1,
+          "originalFrame": 30,
+          "type": "P"
+        },
+        {
+          "pts": 1.1,
+          "originalFrame": 33,
+          "type": "P"
+        },
+        {
+          "pts": 1.2,
+          "originalFrame": 36,
+          "type": "P"
+        },
+        {
+          "pts": 1.3,
+          "originalFrame": 39,
+          "type": "B"
+        },
+        {
+          "pts": 1.4,
+          "originalFrame": 42,
+          "type": "P"
+        },
+        {
+          "pts": 1.5,
+          "originalFrame": 45,
+          "type": "P"
+        },
+        {
+          "pts": 1.6,
+          "originalFrame": 48,
+          "type": "B"
+        },
+        {
+          "pts": 1.7,
+          "originalFrame": 51,
+          "type": "P"
+        },
+        {
+          "pts": 1.8,
+          "originalFrame": 54,
+          "type": "P"
+        },
+        {
+          "pts": 1.9,
+          "originalFrame": 57,
+          "type": "P"
+        }
+      ],
+      "decoded": {
+        "samples": [
+          {
+            "requested": 0.01,
+            "pts": 0,
+            "duration": 0.03333333333333333,
+            "code": 0,
+            "elapsedMs": 5.5,
+            "expected": {
+              "pts": 0,
+              "originalFrame": 0,
+              "type": "I"
+            },
+            "matches": true
+          },
+          {
+            "requested": 1.555,
+            "pts": 1.5,
+            "duration": 0.1,
+            "code": 45,
+            "elapsedMs": 4.799999952316284,
+            "expected": {
+              "pts": 1.5,
+              "originalFrame": 45,
+              "type": "P"
+            },
+            "matches": true
+          },
+          {
+            "requested": 0.032,
+            "pts": 0,
+            "duration": 0.03333333333333333,
+            "code": 0,
+            "elapsedMs": 1.800000011920929,
+            "expected": {
+              "pts": 0,
+              "originalFrame": 0,
+              "type": "I"
+            },
+            "matches": true
+          },
+          {
+            "requested": 1.099,
+            "pts": 1,
+            "duration": 0.1,
+            "code": 30,
+            "elapsedMs": 3.699999988079071,
+            "expected": {
+              "pts": 1,
+              "originalFrame": 30,
+              "type": "P"
+            },
+            "matches": true
+          },
+          {
+            "requested": 0.034,
+            "pts": 0.03333333333333333,
+            "duration": 0.03333333333333333,
+            "code": 1,
+            "elapsedMs": 1.9000000357627869,
+            "expected": {
+              "pts": 0.033333,
+              "originalFrame": 1,
+              "type": "P"
+            },
+            "matches": true
+          },
+          {
+            "requested": 1.101,
+            "pts": 1.1,
+            "duration": 0.1,
+            "code": 33,
+            "elapsedMs": 4.099999964237213,
+            "expected": {
+              "pts": 1.1,
+              "originalFrame": 33,
+              "type": "P"
+            },
+            "matches": true
+          },
+          {
+            "requested": 0.998,
+            "pts": 0.9666666666666667,
+            "duration": 0.03333333333333333,
+            "code": 29,
+            "elapsedMs": 4,
+            "expected": {
+              "pts": 0.966667,
+              "originalFrame": 29,
+              "type": "P"
+            },
+            "matches": true
+          },
+          {
+            "requested": 1.001,
+            "pts": 1,
+            "duration": 0.1,
+            "code": 30,
+            "elapsedMs": 4.100000023841858,
+            "expected": {
+              "pts": 1,
+              "originalFrame": 30,
+              "type": "P"
+            },
+            "matches": true
+          },
+          {
+            "requested": 1.032,
+            "pts": 1,
+            "duration": 0.1,
+            "code": 30,
+            "elapsedMs": 4.399999976158142,
+            "expected": {
+              "pts": 1,
+              "originalFrame": 30,
+              "type": "P"
+            },
+            "matches": true
+          },
+          {
+            "requested": 1.065,
+            "pts": 1,
+            "duration": 0.1,
+            "code": 30,
+            "elapsedMs": 4.200000047683716,
+            "expected": {
+              "pts": 1,
+              "originalFrame": 30,
+              "type": "P"
+            },
+            "matches": true
+          },
+          {
+            "requested": 0.5,
+            "pts": 0.5,
+            "duration": 0.03333333333333333,
+            "code": 15,
+            "elapsedMs": 2.800000011920929,
+            "expected": {
+              "pts": 0.5,
+              "originalFrame": 15,
+              "type": "P"
+            },
+            "matches": true
+          },
+          {
+            "requested": 1.899,
+            "pts": 1.8,
+            "duration": 0.1,
+            "code": 54,
+            "elapsedMs": 4.699999988079071,
+            "expected": {
+              "pts": 1.8,
+              "originalFrame": 54,
+              "type": "P"
+            },
+            "matches": true
+          },
+          {
+            "requested": 0.967,
+            "pts": 0.9666666666666667,
+            "duration": 0.03333333333333333,
+            "code": 29,
+            "elapsedMs": 4.300000011920929,
+            "expected": {
+              "pts": 0.966667,
+              "originalFrame": 29,
+              "type": "P"
+            },
+            "matches": true
+          },
+          {
+            "requested": 0.965,
+            "pts": 0.9333333333333333,
+            "duration": 0.03333333333333333,
+            "code": 28,
+            "elapsedMs": 4.199999988079071,
+            "expected": {
+              "pts": 0.933333,
+              "originalFrame": 28,
+              "type": "B"
+            },
+            "matches": true
+          },
+          {
+            "requested": 1.201,
+            "pts": 1.2,
+            "duration": 0.1,
+            "code": 36,
+            "elapsedMs": 4.400000035762787,
+            "expected": {
+              "pts": 1.2,
+              "originalFrame": 36,
+              "type": "P"
+            },
+            "matches": true
+          },
+          {
+            "requested": 1.199,
+            "pts": 1.1,
+            "duration": 0.1,
+            "code": 33,
+            "elapsedMs": 4.699999988079071,
+            "expected": {
+              "pts": 1.1,
+              "originalFrame": 33,
+              "type": "P"
+            },
+            "matches": true
+          },
+          {
+            "requested": 0.101,
+            "pts": 0.1,
+            "duration": 0.03333333333333333,
+            "code": 3,
+            "elapsedMs": 1.899999976158142,
+            "expected": {
+              "pts": 0.1,
+              "originalFrame": 3,
+              "type": "B"
+            },
+            "matches": true
+          },
+          {
+            "requested": 0.099,
+            "pts": 0.06666666666666667,
+            "duration": 0.03333333333333333,
+            "code": 2,
+            "elapsedMs": 1.600000023841858,
+            "expected": {
+              "pts": 0.066667,
+              "originalFrame": 2,
+              "type": "P"
+            },
+            "matches": true
+          },
+          {
+            "requested": 1.501,
+            "pts": 1.5,
+            "duration": 0.1,
+            "code": 45,
+            "elapsedMs": 5.100000023841858,
+            "expected": {
+              "pts": 1.5,
+              "originalFrame": 45,
+              "type": "P"
+            },
+            "matches": true
+          },
+          {
+            "requested": 1.499,
+            "pts": 1.4,
+            "duration": 0.1,
+            "code": 42,
+            "elapsedMs": 4.800000011920929,
+            "expected": {
+              "pts": 1.4,
+              "originalFrame": 42,
+              "type": "P"
+            },
+            "matches": true
+          }
+        ],
+        "summary": {
+          "matched": 20,
+          "total": 20,
+          "medianMs": 4.200000047683716,
+          "p95Ms": 5.100000023841858
+        },
+        "sequential": [
+          0,
+          0.03333333333333333,
+          0.06666666666666667,
+          0.1,
+          0.13333333333333333,
+          0.16666666666666666,
+          0.2,
+          0.23333333333333334,
+          0.26666666666666666,
+          0.3,
+          0.3333333333333333,
+          0.36666666666666664,
+          0.4,
+          0.43333333333333335,
+          0.4666666666666667,
+          0.5,
+          0.5333333333333333,
+          0.5666666666666667,
+          0.6,
+          0.6333333333333333,
+          0.6666666666666666,
+          0.7,
+          0.7333333333333333,
+          0.7666666666666667,
+          0.8,
+          0.8333333333333334,
+          0.8666666666666667,
+          0.9,
+          0.9333333333333333,
+          0.9666666666666667,
+          1,
+          1.1,
+          1.2,
+          1.3,
+          1.4,
+          1.5,
+          1.6,
+          1.7,
+          1.8,
+          1.9
+        ],
+        "sequentialMatches": true
+      },
+      "native": {
+        "samples": [
+          {
+            "requested": 0.01,
+            "currentTime": 0.01,
+            "presented": 0,
+            "code": 0,
+            "elapsedMs": 12.600000023841858,
+            "expected": {
+              "pts": 0,
+              "originalFrame": 0,
+              "type": "I"
+            },
+            "matches": true
+          },
+          {
+            "requested": 1.555,
+            "currentTime": 1.555,
+            "presented": 1.5,
+            "code": 45,
+            "elapsedMs": 15.299999952316284,
+            "expected": {
+              "pts": 1.5,
+              "originalFrame": 45,
+              "type": "P"
+            },
+            "matches": true
+          },
+          {
+            "requested": 0.032,
+            "currentTime": 0.032,
+            "presented": 0,
+            "code": 0,
+            "elapsedMs": 17.700000047683716,
+            "expected": {
+              "pts": 0,
+              "originalFrame": 0,
+              "type": "I"
+            },
+            "matches": true
+          },
+          {
+            "requested": 1.099,
+            "currentTime": 1.099,
+            "presented": 1,
+            "code": 30,
+            "elapsedMs": 15.899999976158142,
+            "expected": {
+              "pts": 1,
+              "originalFrame": 30,
+              "type": "P"
+            },
+            "matches": true
+          },
+          {
+            "requested": 0.034,
+            "currentTime": 0.034,
+            "presented": 0.033333,
+            "code": 1,
+            "elapsedMs": 17.19999998807907,
+            "expected": {
+              "pts": 0.033333,
+              "originalFrame": 1,
+              "type": "P"
+            },
+            "matches": true
+          },
+          {
+            "requested": 1.101,
+            "currentTime": 1.101,
+            "presented": 1.1,
+            "code": 33,
+            "elapsedMs": 16,
+            "expected": {
+              "pts": 1.1,
+              "originalFrame": 33,
+              "type": "P"
+            },
+            "matches": true
+          },
+          {
+            "requested": 0.998,
+            "currentTime": 0.998,
+            "presented": 0.966667,
+            "code": 29,
+            "elapsedMs": 16.69999998807907,
+            "expected": {
+              "pts": 0.966667,
+              "originalFrame": 29,
+              "type": "P"
+            },
+            "matches": true
+          },
+          {
+            "requested": 1.001,
+            "currentTime": 1.000999,
+            "presented": 1,
+            "code": 30,
+            "elapsedMs": 17.400000035762787,
+            "expected": {
+              "pts": 1,
+              "originalFrame": 30,
+              "type": "P"
+            },
+            "matches": true
+          },
+          {
+            "requested": 1.032,
+            "currentTime": 1.032,
+            "presented": 1,
+            "code": 30,
+            "elapsedMs": 17.399999976158142,
+            "expected": {
+              "pts": 1,
+              "originalFrame": 30,
+              "type": "P"
+            },
+            "matches": true
+          },
+          {
+            "requested": 1.065,
+            "currentTime": 1.065,
+            "presented": 1,
+            "code": 30,
+            "elapsedMs": 14.900000035762787,
+            "expected": {
+              "pts": 1,
+              "originalFrame": 30,
+              "type": "P"
+            },
+            "matches": true
+          },
+          {
+            "requested": 0.5,
+            "currentTime": 0.5,
+            "presented": 0.5,
+            "code": 15,
+            "elapsedMs": 18,
+            "expected": {
+              "pts": 0.5,
+              "originalFrame": 15,
+              "type": "P"
+            },
+            "matches": true
+          },
+          {
+            "requested": 1.899,
+            "currentTime": 1.899,
+            "presented": 1.8,
+            "code": 54,
+            "elapsedMs": 16.099999964237213,
+            "expected": {
+              "pts": 1.8,
+              "originalFrame": 54,
+              "type": "P"
+            },
+            "matches": true
+          },
+          {
+            "requested": 0.967,
+            "currentTime": 0.967,
+            "presented": 0.966667,
+            "code": 29,
+            "elapsedMs": 16.30000001192093,
+            "expected": {
+              "pts": 0.966667,
+              "originalFrame": 29,
+              "type": "P"
+            },
+            "matches": true
+          },
+          {
+            "requested": 0.965,
+            "currentTime": 0.965,
+            "presented": 0.933333,
+            "code": 28,
+            "elapsedMs": 16.899999976158142,
+            "expected": {
+              "pts": 0.933333,
+              "originalFrame": 28,
+              "type": "B"
+            },
+            "matches": true
+          },
+          {
+            "requested": 1.201,
+            "currentTime": 1.201,
+            "presented": 1.2,
+            "code": 36,
+            "elapsedMs": 16.80000001192093,
+            "expected": {
+              "pts": 1.2,
+              "originalFrame": 36,
+              "type": "P"
+            },
+            "matches": true
+          },
+          {
+            "requested": 1.199,
+            "currentTime": 1.199,
+            "presented": 1.1,
+            "code": 33,
+            "elapsedMs": 17,
+            "expected": {
+              "pts": 1.1,
+              "originalFrame": 33,
+              "type": "P"
+            },
+            "matches": true
+          },
+          {
+            "requested": 0.101,
+            "currentTime": 0.101,
+            "presented": 0.1,
+            "code": 3,
+            "elapsedMs": 16.100000023841858,
+            "expected": {
+              "pts": 0.1,
+              "originalFrame": 3,
+              "type": "B"
+            },
+            "matches": true
+          },
+          {
+            "requested": 0.099,
+            "currentTime": 0.099,
+            "presented": 0.066667,
+            "code": 2,
+            "elapsedMs": 16.599999964237213,
+            "expected": {
+              "pts": 0.066667,
+              "originalFrame": 2,
+              "type": "P"
+            },
+            "matches": true
+          },
+          {
+            "requested": 1.501,
+            "currentTime": 1.501,
+            "presented": 1.5,
+            "code": 45,
+            "elapsedMs": 17,
+            "expected": {
+              "pts": 1.5,
+              "originalFrame": 45,
+              "type": "P"
+            },
+            "matches": true
+          },
+          {
+            "requested": 1.499,
+            "currentTime": 1.499,
+            "presented": 1.4,
+            "code": 42,
+            "elapsedMs": 16.30000001192093,
+            "expected": {
+              "pts": 1.4,
+              "originalFrame": 42,
+              "type": "P"
+            },
+            "matches": true
+          }
+        ],
+        "summary": {
+          "matched": 20,
+          "total": 20,
+          "medianMs": 16.69999998807907,
+          "p95Ms": 17.700000047683716
+        }
+      }
+    }
+  ]
+}

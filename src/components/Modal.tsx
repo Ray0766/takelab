@@ -7,22 +7,31 @@ export function Modal({
   children,
   close,
   locked = false,
+  className = "",
 }: {
   title: string;
   children: ReactNode;
   close: () => void;
   locked?: boolean;
+  className?: string;
 }) {
   const ref = useRef<HTMLDialogElement>(null);
   useEffect(() => {
     const dialog = ref.current!;
+    const opener = document.activeElement as HTMLElement | null;
     dialog.showModal();
-    return () => dialog.close();
+    return () => {
+      dialog.close();
+      queueMicrotask(() => {
+        if (opener?.isConnected && !document.querySelector("dialog[open]"))
+          opener.focus();
+      });
+    };
   }, []);
   return (
     <dialog
       ref={ref}
-      className="modal"
+      className={`modal ${className}`}
       aria-label={title}
       onCancel={(e) => {
         e.preventDefault();

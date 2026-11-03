@@ -1,0 +1,13 @@
+{
+  "checkedAt": "2026-11-03T12:29:08.450Z",
+  "browser": "156.0.8078.4",
+  "build": "dist",
+  "server": "plain HTTP 200; no Range support",
+  "frameFlows": 5,
+  "subpath": "/takelab/",
+  "workerPaths": [
+    "/takelab/assets/frame.worker-QyMW3s69.js",
+    "/takelab/assets/frame.worker-QyMW3s69.js"
+  ],
+  "errors": []
+}

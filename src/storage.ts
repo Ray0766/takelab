@@ -60,6 +60,24 @@ export async function writeMedia(id: string, blob: Blob) {
       );
   });
 }
+// The frame and its marker/decision references commit together, or not at all.
+export async function saveProjectWithMedia(
+  project: Project,
+  media: Map<string, Blob>,
+) {
+  const db = await database();
+  return new Promise<void>((resolve, reject) => {
+    const tx = db.transaction(["project", "media"], "readwrite");
+    for (const [id, blob] of media) tx.objectStore("media").put(blob, id);
+    tx.objectStore("project").put(project, "active");
+    tx.oncomplete = () => resolve();
+    tx.onabort = tx.onerror = () =>
+      reject(
+        tx.error ??
+          new Error("Could not save the frame. Free disk space and retry."),
+      );
+  });
+}
 // Atomic replacement: failures leave the previous project and its sources intact.
 export async function replaceProject(
   project: Project,

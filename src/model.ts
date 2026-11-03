@@ -1,11 +1,28 @@
 export type Language = "en" | "zh";
 export type Verdict = "unreviewed" | "shortlisted" | "rejected" | "winner";
 export type MarkerKind = "issue" | "good" | "note";
+export interface SourceMoment {
+  ptsUs: number;
+  trackId: number;
+  sourceHash: string;
+}
+export interface FrameEvidence extends SourceMoment {
+  id: string;
+  frameIndex: number;
+  width: number;
+  height: number;
+  pngHash: string;
+  createdAt: string;
+}
+export interface ActionAnchor extends SourceMoment {
+  label: string;
+}
 export interface Marker {
   id: string;
   time: number;
   kind: MarkerKind;
   text: string;
+  frame?: FrameEvidence;
 }
 export interface Reference {
   id: string;
@@ -33,6 +50,8 @@ export interface Take {
   markers: Marker[];
   references: Reference[];
   demo?: string;
+  sourceHash?: string;
+  anchor?: ActionAnchor;
 }
 export interface Shot {
   id: string;
@@ -222,6 +241,22 @@ export function parseProject(value: unknown): Project {
     typeof v === "number" && Number.isFinite(v) && v >= 0 && v <= max
       ? v
       : fail();
+  const integer = (v: unknown, max = 1e12) => {
+    const n = num(v, max);
+    return Number.isSafeInteger(n) ? n : fail();
+  };
+  const hash = (v: unknown) => {
+    const s = str(v, 64);
+    return /^[a-f0-9]{64}$/.test(s) ? s : fail();
+  };
+  const moment = (
+    v: Record<string, unknown>,
+    duration: number,
+  ): SourceMoment => ({
+    ptsUs: integer(v.ptsUs, Math.ceil(duration * 1e6)),
+    trackId: integer(v.trackId),
+    sourceHash: hash(v.sourceHash),
+  });
   const arr = (v: unknown, max: number): unknown[] =>
     Array.isArray(v) && v.length <= max ? v : fail();
   const p = obj(value);
@@ -271,12 +306,32 @@ export function parseProject(value: unknown): Project {
         const m = obj(v);
         const kind = str(m.kind) as MarkerKind;
         if (!["issue", "good", "note"].includes(kind)) fail();
-        return {
+        const marker: Marker = {
           id: unique(m.id),
           time: num(m.time, duration),
           kind,
           text: str(m.text, 2000),
         };
+        if (m.frame !== undefined) {
+          const f = obj(m.frame);
+          marker.frame = {
+            ...moment(f, duration),
+            id: unique(f.id),
+            frameIndex: integer(f.frameIndex, 59999),
+            width: integer(f.width, 4096),
+            height: integer(f.height, 4096),
+            pngHash: hash(f.pngHash),
+            createdAt: str(f.createdAt, 100),
+          };
+          if (
+            !marker.frame.width ||
+            !marker.frame.height ||
+            marker.frame.width * marker.frame.height > 4096 * 2160 ||
+            Math.abs(marker.time * 1e6 - marker.frame.ptsUs) > 1
+          )
+            fail();
+        }
+        return marker;
       }),
       references: arr(t.references, 30).map((v) => {
         const r = obj(v);
@@ -300,8 +355,29 @@ export function parseProject(value: unknown): Project {
       if (!/^orbit-0[1-9]\.mp4$/.test(demo)) fail();
       take.demo = demo;
     }
+    if (t.sourceHash !== undefined) take.sourceHash = hash(t.sourceHash);
+    if (t.anchor !== undefined) {
+      const a = obj(t.anchor);
+      take.anchor = { ...moment(a, duration), label: str(a.label, 120) };
+      if (
+        !take.anchor.label.trim() ||
+        take.anchor.sourceHash !== take.sourceHash ||
+        Math.abs(take.offset * 1e6 - take.anchor.ptsUs) > 1
+      )
+        fail();
+    }
+    const frames = take.markers.flatMap((m) => (m.frame ? [m.frame] : []));
+    if (
+      frames.length > 50 ||
+      frames.some((f) => f.sourceHash !== take.sourceHash)
+    )
+      fail();
     return take;
   });
+  if (
+    takes.reduce((n, t) => n + t.markers.filter((m) => m.frame).length, 0) > 500
+  )
+    fail();
   for (const shot of shots)
     if (
       takes.filter((t) => t.shotId === shot.id && t.verdict === "winner")

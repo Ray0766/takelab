@@ -78,3 +78,13 @@ Ray explicitly chose stronger typography and composition. Replace the permanent 
 ## Density follow-up
 
 Ray requested larger footage and less top/side whitespace. Remove the height-derived grid width cap, merge desktop title/tools, and compact the shared transport. Retain original aspect ratios and allow scrolling in short windows. Explicit evidence/selection navigation also scrolls to the target. The same 1440 × 1000 sample now has approximately twice the actual nine-up source area; this is a measured layout improvement, not a claim about creator speed. See [measurements, screenshots and limits](UI_DENSITY_2026-11-03.md).
+
+## Technology research: recommendation, not adoption
+
+The user requested current research into improvements to synchronization and take selection. Recommend a bounded source-frame inspection path (WebCodecs + worker + a pinned Mediabunny adapter), retaining native overview playback; evaluate proxies next and optional issue suggestions later. The isolated 640×360 CFR/VFR experiment retrieved the correct frame for 40/40 queries on **both** the native and WebCodecs paths. WebCodecs also exposed all 100 expected source timestamps. This establishes feasibility of explicit sample access, not a playback speedup or a need to replace native players. Production dependencies and app behavior remain unchanged. See [sources, costs, raw evidence, alternatives and proposed acceptance](TECHNOLOGY_RESEARCH_2026-11-03.md).
+
+## Source-frame inspection adopted after authorization (2026-11-03)
+
+Ray authorized source-frame inspection, evidence PNGs and action-anchor alignment while retaining nine-up review. Adopt Mediabunny **1.65.0** (MPL-2.0, unmodified) in dedicated workers and **@noble/hashes 2.4.0** (MIT) for chunked fingerprints; both are pinned in the lockfile. Keep native playback for overview/audio and real-time video exports. The practical addition is verified source PTS navigation and a portable frame/observation/decision/recipe association; neither faster selection nor superior playback accuracy is established by the research baseline. Full-grid custom decoding, proxies and ML are deferred.
+
+A wide temporary inspection surface preserves the enlarged grid, unlike a permanent second inspector that would shrink footage. Reuse existing typography, colors and compact controls; paired spatial comparison follows the previously reviewed Frame.io reference, and original-source identity follows Resolve's source/proxy separation. This adds no editing timeline, retiming, grading or cloud-review scope. Sources, limits, raw receipts, costs and reproducible commands are in [the implementation record](SOURCE_FRAMES_2026-11-03.md).

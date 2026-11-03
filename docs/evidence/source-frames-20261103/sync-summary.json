@@ -1,0 +1,224 @@
+[
+  {
+    "trial": 1,
+    "checkedAt": "2026-11-03T12:23:49.109Z",
+    "browser": "156.0.8078.4",
+    "gate": "strict-p95",
+    "single": {
+      "clock": {
+        "p95Ms": 0,
+        "maxMs": 0
+      },
+      "presented": {
+        "p95Ms": 0,
+        "maxMs": 0
+      }
+    },
+    "dual-1x": {
+      "clock": {
+        "p95Ms": 3.275000000000139,
+        "maxMs": 11.169999999999902
+      },
+      "presented": {
+        "p95Ms": 49.99999999999982,
+        "maxMs": 58.33300000000019
+      }
+    },
+    "dual-0.5x": {
+      "clock": {
+        "p95Ms": 0.18999999999991246,
+        "maxMs": 4.302999999999946
+      },
+      "presented": {
+        "p95Ms": 33.33400000000009,
+        "maxMs": 41.66599999999998
+      }
+    },
+    "dual-2x": {
+      "clock": {
+        "p95Ms": 9.653000000000134,
+        "maxMs": 10.024999999999729
+      },
+      "presented": {
+        "p95Ms": 58.33300000000019,
+        "maxMs": 58.33399999999989
+      }
+    },
+    "loop": {
+      "clock": {
+        "p95Ms": 6.9310000000000205,
+        "maxMs": 6.9310000000000205
+      },
+      "presented": {
+        "p95Ms": 25.00000000000002,
+        "maxMs": 25.00000000000002
+      }
+    },
+    "targets": {
+      "dual-1x": {
+        "targetP95Ms": 80,
+        "met": true
+      },
+      "dual-0.5x": {
+        "targetP95Ms": 80,
+        "met": true
+      },
+      "dual-2x": {
+        "targetP95Ms": 84,
+        "met": true
+      },
+      "loop": {
+        "targetP95Ms": 80,
+        "met": true
+      }
+    }
+  },
+  {
+    "trial": 2,
+    "checkedAt": "2026-11-03T12:24:05.493Z",
+    "browser": "156.0.8078.4",
+    "gate": "strict-p95",
+    "single": {
+      "clock": {
+        "p95Ms": 0,
+        "maxMs": 0
+      },
+      "presented": {
+        "p95Ms": 0,
+        "maxMs": 0
+      }
+    },
+    "dual-1x": {
+      "clock": {
+        "p95Ms": 0.03400000000031156,
+        "maxMs": 0.04300000000001525
+      },
+      "presented": {
+        "p95Ms": 41.66599999999998,
+        "maxMs": 50.00000000000027
+      }
+    },
+    "dual-0.5x": {
+      "clock": {
+        "p95Ms": 0.15500000000012726,
+        "maxMs": 4.170999999999925
+      },
+      "presented": {
+        "p95Ms": 41.66599999999998,
+        "maxMs": 41.66700000000001
+      }
+    },
+    "dual-2x": {
+      "clock": {
+        "p95Ms": 8.669999999999956,
+        "maxMs": 9.151999999999827
+      },
+      "presented": {
+        "p95Ms": 50.00000000000027,
+        "maxMs": 66.66600000000011
+      }
+    },
+    "loop": {
+      "clock": {
+        "p95Ms": 11.856999999999784,
+        "maxMs": 13.473999999999986
+      },
+      "presented": {
+        "p95Ms": 33.33300000000028,
+        "maxMs": 33.33400000000009
+      }
+    },
+    "targets": {
+      "dual-1x": {
+        "targetP95Ms": 80,
+        "met": true
+      },
+      "dual-0.5x": {
+        "targetP95Ms": 80,
+        "met": true
+      },
+      "dual-2x": {
+        "targetP95Ms": 84,
+        "met": true
+      },
+      "loop": {
+        "targetP95Ms": 80,
+        "met": true
+      }
+    }
+  },
+  {
+    "trial": 3,
+    "checkedAt": "2026-11-03T12:24:21.890Z",
+    "browser": "156.0.8078.4",
+    "gate": "strict-p95",
+    "single": {
+      "clock": {
+        "p95Ms": 0,
+        "maxMs": 0
+      },
+      "presented": {
+        "p95Ms": 0,
+        "maxMs": 0
+      }
+    },
+    "dual-1x": {
+      "clock": {
+        "p95Ms": 0.018999999999991246,
+        "maxMs": 0.022999999999884224
+      },
+      "presented": {
+        "p95Ms": 41.66599999999998,
+        "maxMs": 50.00000000000027
+      }
+    },
+    "dual-0.5x": {
+      "clock": {
+        "p95Ms": 0.10500000000013276,
+        "maxMs": 0.4609999999999892
+      },
+      "presented": {
+        "p95Ms": 33.33400000000009,
+        "maxMs": 41.66600000000009
+      }
+    },
+    "dual-2x": {
+      "clock": {
+        "p95Ms": 8.97400000000026,
+        "maxMs": 9.546999999999972
+      },
+      "presented": {
+        "p95Ms": 66.66600000000011,
+        "maxMs": 83.3339999999998
+      }
+    },
+    "loop": {
+      "clock": {
+        "p95Ms": 8.101999999999943,
+        "maxMs": 8.101999999999943
+      },
+      "presented": {
+        "p95Ms": 33.33400000000009,
+        "maxMs": 33.33400000000009
+      }
+    },
+    "targets": {
+      "dual-1x": {
+        "targetP95Ms": 80,
+        "met": true
+      },
+      "dual-0.5x": {
+        "targetP95Ms": 80,
+        "met": true
+      },
+      "dual-2x": {
+        "targetP95Ms": 84,
+        "met": true
+      },
+      "loop": {
+        "targetP95Ms": 80,
+        "met": true
+      }
+    }
+  }
+]

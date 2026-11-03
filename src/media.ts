@@ -3,14 +3,18 @@ import { readMedia } from "./storage";
 
 export const demoUrl = (name: string) =>
   `${import.meta.env.BASE_URL}demo/${name}`;
-export async function sourceFor(
+export async function sourceBlob(
   take: Take,
-): Promise<{ url: string; release: () => void } | null> {
+  signal?: AbortSignal,
+): Promise<Blob | undefined> {
   let blob = await readMedia(take.id);
+  signal?.throwIfAborted();
   if (!blob && take.demo) {
     // Some static hosts ignore Range requests. Fetch the small bundled fixture
     // once per mounted player so demo seeking follows the same Blob path as imports.
     const controller = new AbortController();
+    const cancel = () => controller.abort();
+    signal?.addEventListener("abort", cancel, { once: true });
     const timer = setTimeout(() => controller.abort(), 15000);
     try {
       const response = await fetch(demoUrl(take.demo), {
@@ -21,8 +25,16 @@ export async function sourceFor(
       blob = await response.blob();
     } finally {
       clearTimeout(timer);
+      signal?.removeEventListener("abort", cancel);
     }
   }
+  signal?.throwIfAborted();
+  return blob;
+}
+export async function sourceFor(
+  take: Take,
+): Promise<{ url: string; release: () => void } | null> {
+  const blob = await sourceBlob(take);
   if (!blob) return null;
   const url = URL.createObjectURL(blob);
   return { url, release: () => URL.revokeObjectURL(url) };

@@ -1,5 +1,6 @@
 import type { Decision, Marker, Shot, Take } from "../model";
 import { timecode } from "../model";
+import { EvidenceThumbnail } from "./FrameEvidenceView";
 
 export function DecisionPanel({
   shot,
@@ -9,6 +10,7 @@ export function DecisionPanel({
   change,
   revisit,
   record,
+  image,
   t,
 }: {
   shot: Shot;
@@ -18,6 +20,7 @@ export function DecisionPanel({
   change: (decision: Decision) => void;
   revisit: (take: Take, marker: Marker) => void;
   record: (take: Take) => void;
+  image: (take: Take, marker: Marker) => void;
   t: (en: string, zh: string) => string;
 }) {
   if (blind)
@@ -66,6 +69,7 @@ export function DecisionPanel({
       <label className="decision-reason">
         {t("Why this take?", "为什么选这一条？")}
         <textarea
+          aria-label={t("Why this take?", "为什么选这一条？")}
           value={decision.reason}
           maxLength={4000}
           placeholder={t(
@@ -126,9 +130,9 @@ export function DecisionPanel({
             </label>
             <button
               className="evidence-time"
-              disabled={marker.time < take.offset}
+              disabled={!marker.frame && marker.time < take.offset}
               title={
-                marker.time < take.offset
+                !marker.frame && marker.time < take.offset
                   ? t(
                       "Before the review offset. Reduce the offset to revisit.",
                       "位于评审起点之前，请先减小偏移。",
@@ -139,6 +143,13 @@ export function DecisionPanel({
             >
               {timecode(marker.time, fps)} <span>{t("Revisit", "回看")}</span>
             </button>
+            {marker.frame && (
+              <EvidenceThumbnail
+                frame={marker.frame}
+                open={() => image(take, marker)}
+                label={t("View frame evidence", "查看源帧证据")}
+              />
+            )}
           </div>
         );
       })}

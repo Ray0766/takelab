@@ -1,0 +1,100 @@
+{
+  "schemaVersion": 1,
+  "id": "dd7c3bf5-8bd1-4f45-b757-99a979488f08",
+  "name": "Untitled project",
+  "createdAt": "2026-11-03T12:29:00.015Z",
+  "updatedAt": "2026-11-03T12:29:01.059Z",
+  "fps": 24,
+  "shots": [
+    {
+      "id": "8dfc429e-31d6-4b1d-a91f-59d78952dd04",
+      "name": "Shot 01",
+      "decision": {
+        "takeId": "fa5a860d-169c-416c-975c-1ccec1c86296",
+        "reason": "B is selected; A's exact frame is retained as the comparison evidence.",
+        "evidence": [
+          {
+            "takeId": "2b5b0714-4fa5-4d3c-8e84-20abca3a2a70",
+            "markerId": "72c8eb3a-58cf-4b22-b2d7-f0e35e493b1d"
+          }
+        ]
+      }
+    }
+  ],
+  "takes": [
+    {
+      "id": "2b5b0714-4fa5-4d3c-8e84-20abca3a2a70",
+      "shotId": "8dfc429e-31d6-4b1d-a91f-59d78952dd04",
+      "name": "orbit-04.mp4",
+      "size": 33405,
+      "lastModified": 1793669331894,
+      "type": "video/mp4",
+      "duration": 6,
+      "width": 640,
+      "height": 360,
+      "offset": 1,
+      "verdict": "unreviewed",
+      "model": "",
+      "prompt": "Original synthetic orbit fixture; preserve source-frame evidence.",
+      "negativePrompt": "",
+      "seed": "",
+      "settings": "",
+      "cost": null,
+      "markers": [
+        {
+          "id": "72c8eb3a-58cf-4b22-b2d7-f0e35e493b1d",
+          "time": 1.041667,
+          "kind": "issue",
+          "text": "Source-frame reference: inspect the original ring edge before choosing B.",
+          "frame": {
+            "id": "e3643e91-ffb2-42df-a9c1-c541625e2dca",
+            "ptsUs": 1041667,
+            "trackId": 1,
+            "sourceHash": "32ce3e34081ffc2cab501e6d18669b2ab66e909e671f47ced42af2e04dfbba18",
+            "frameIndex": 25,
+            "width": 640,
+            "height": 360,
+            "pngHash": "04eb02e5220246772aad0e03bce762ff99080ac73b960ebac1bd3ec246608082",
+            "createdAt": "2026-11-03T12:29:00.792Z"
+          }
+        }
+      ],
+      "references": [],
+      "sourceHash": "32ce3e34081ffc2cab501e6d18669b2ab66e909e671f47ced42af2e04dfbba18",
+      "anchor": {
+        "ptsUs": 1000000,
+        "trackId": 1,
+        "sourceHash": "32ce3e34081ffc2cab501e6d18669b2ab66e909e671f47ced42af2e04dfbba18",
+        "label": "Synthetic reference moment"
+      }
+    },
+    {
+      "id": "fa5a860d-169c-416c-975c-1ccec1c86296",
+      "shotId": "8dfc429e-31d6-4b1d-a91f-59d78952dd04",
+      "name": "orbit-07.mp4",
+      "size": 27869,
+      "lastModified": 1793669332860,
+      "type": "video/mp4",
+      "duration": 6,
+      "width": 640,
+      "height": 360,
+      "offset": 2,
+      "verdict": "winner",
+      "model": "",
+      "prompt": "Synthetic orbit B: retain the ring crossing and its source-frame comparison. No generation model used.",
+      "negativePrompt": "",
+      "seed": "",
+      "settings": "",
+      "cost": null,
+      "markers": [],
+      "references": [],
+      "sourceHash": "96fa74e1f493650d3228090e9a5061ee459fa5dfb748b9269c3b5debb32896d3",
+      "anchor": {
+        "ptsUs": 2000000,
+        "trackId": 1,
+        "sourceHash": "96fa74e1f493650d3228090e9a5061ee459fa5dfb748b9269c3b5debb32896d3",
+        "label": "Synthetic reference moment"
+      }
+    }
+  ]
+}

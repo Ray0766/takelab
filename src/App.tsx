@@ -8,6 +8,7 @@ import {
   ChevronLeft,
   ChevronRight,
   Copy,
+  Crosshair,
   Download,
   Eye,
   EyeOff,
@@ -52,14 +53,31 @@ import {
   timecode,
   uid,
 } from "./model";
-import type { Language, MarkerKind, Project, Take, Verdict } from "./model";
+import type {
+  FrameEvidence,
+  Language,
+  Marker,
+  MarkerKind,
+  Project,
+  Take,
+  Verdict,
+} from "./model";
 import {
   removeProjectMedia,
   loadProject,
   replaceProject,
   saveProject,
   writeMedia,
+  saveProjectWithMedia,
 } from "./storage";
+import { hashBlob, takeMediaIds, validateFrameBlob } from "./evidence";
+import type { CapturedFrame } from "./frames/types";
+import { FrameInspection } from "./components/FrameInspection";
+import type { AnchorChange } from "./components/FrameInspection";
+import {
+  EvidenceThumbnail,
+  FrameEvidenceView,
+} from "./components/FrameEvidenceView";
 import { download, inspectVideo } from "./media";
 import { createDemo } from "./demo";
 import { exportArchive, importArchive, reportMarkdown } from "./archive";
@@ -92,6 +110,16 @@ export default function App() {
     [language],
   );
   const [project, setProject] = useState<Project | null>(null);
+  const projectRef = useRef(project);
+  projectRef.current = project;
+  const [inspection, setInspection] = useState<{
+    takeId: string;
+    sourceTime: number;
+  } | null>(null);
+  const [framePreview, setFramePreview] = useState<{
+    takeId: string;
+    markerId: string;
+  } | null>(null);
   const [loadError, setLoadError] = useState("");
   const [shotId, setShotId] = useState("");
   const [selectedId, setSelectedId] = useState("");
@@ -245,9 +273,9 @@ export default function App() {
     if (page >= pageCount) setPage(pageCount - 1);
   }, [page, pageCount]);
   useEffect(() => {
-    if (!visible.some((take) => take.id === selectedId))
+    if (!revisitTarget && !visible.some((take) => take.id === selectedId))
       setSelectedId(visible[0]?.id || "");
-  }, [visible, selectedId]);
+  }, [visible, selectedId, revisitTarget]);
   useEffect(() => {
     setMarkerText("");
   }, [selectedId]);
@@ -270,6 +298,8 @@ export default function App() {
     setRevisitTarget(null);
   }, [revisitTarget, filtered, page, grid]);
   const revealTake = (take: Take, sourceTime = take.offset) => {
+    // Bind the editor immediately; pagination/scrolling can settle afterwards.
+    setSelectedId(take.id);
     setFilter("all");
     setHideRejected(false);
     setSearch("");
@@ -292,11 +322,143 @@ export default function App() {
     update((p) => ({
       ...p,
       takes: p.takes.map((take) =>
-        take.id === id ? { ...take, ...patch } : take,
+        take.id === id
+          ? {
+              ...take,
+              ...patch,
+              ...(patch.offset !== undefined &&
+              patch.anchor === undefined &&
+              take.anchor &&
+              Math.abs(patch.offset * 1e6 - take.anchor.ptsUs) > 1
+                ? { anchor: undefined }
+                : {}),
+            }
+          : take,
       ),
     }));
   const verdict = (id: string, value: Verdict) =>
     update((p) => setVerdict(p, id, value));
+  const openFrames = (take: Take, sourceTime?: number) => {
+    transport.pause();
+    setInspection({
+      takeId: take.id,
+      sourceTime: sourceTime ?? transport.getTime() + take.offset,
+    });
+  };
+  const alignActions = (changes: AnchorChange[]) => {
+    transport.pause();
+    update((p) => ({
+      ...p,
+      takes: p.takes.map((take) => {
+        const change = changes.find((c) => c.id === take.id);
+        return change
+          ? {
+              ...take,
+              ...change,
+              sourceHash: take.sourceHash || change.sourceHash,
+            }
+          : take;
+      }),
+    }));
+    transport.seek(0);
+  };
+  const saveFrameEvidence = async (
+    takeId: string,
+    captured: CapturedFrame,
+    text: string,
+    kind: MarkerKind,
+  ) => {
+    // A failed atomic image write must still allow a later retry.
+    await saveQueue.current.catch(() => {});
+    const p = projectRef.current;
+    const take = p?.takes.find((t) => t.id === takeId);
+    if (!p || !take)
+      throw new Error(
+        t(
+          "Source no longer belongs to this project.",
+          "此素材已不在当前项目中。",
+        ),
+      );
+    if (
+      take.markers.length >= 2000 ||
+      take.markers.filter((m) => m.frame).length >= 50 ||
+      p.takes.reduce(
+        (n, x) => n + x.markers.filter((m) => m.frame).length,
+        0,
+      ) >= 500
+    )
+      throw new Error(
+        t(
+          "Evidence limit reached: 50 images per take, 500 per project. Remove an unused frame marker first.",
+          "已达到证据上限：每条视频 50 张、每个项目 500 张。请先删除不需要的截图标记。",
+        ),
+      );
+    if (take.sourceHash && take.sourceHash !== captured.sourceHash)
+      throw new Error(
+        t(
+          "Source fingerprint changed. No evidence was saved.",
+          "原素材指纹已变化，未保存证据。",
+        ),
+      );
+    const frame: FrameEvidence = {
+      id: uid(),
+      ptsUs: captured.ptsUs,
+      trackId: captured.trackId,
+      sourceHash: captured.sourceHash,
+      frameIndex: captured.index,
+      width: captured.width,
+      height: captured.height,
+      pngHash: captured.pngHash,
+      createdAt: new Date().toISOString(),
+    };
+    await validateFrameBlob(captured.blob, frame);
+    const marker: Marker = {
+      id: uid(),
+      time: captured.ptsUs / 1e6,
+      kind,
+      text,
+      frame,
+    };
+    const next = reconcileDecisions({
+      ...p,
+      updatedAt: new Date().toISOString(),
+      takes: p.takes.map((x) =>
+        x.id === takeId
+          ? {
+              ...x,
+              sourceHash: captured.sourceHash,
+              markers: [...x.markers, marker],
+            }
+          : x,
+      ),
+    });
+    const decision = next.shots.find((s) => s.id === take.shotId)?.decision;
+    if (decision)
+      decision.evidence = [
+        ...decision.evidence,
+        { takeId, markerId: marker.id },
+      ];
+    setSaved("saving");
+    saveQueue.current = saveQueue.current
+      .catch(() => {})
+      .then(() =>
+        saveProjectWithMedia(next, new Map([[frame.id, captured.blob]])),
+      );
+    try {
+      await saveQueue.current;
+      setProject(next);
+    } catch (e) {
+      setSaved("error");
+      saveQueue.current = saveQueue.current.catch(() => {});
+      throw e;
+    }
+  };
+  const previewTake = project?.takes.find(
+    (take) => take.id === framePreview?.takeId,
+  );
+  const previewMarker = previewTake?.markers.find(
+    (m) => m.id === framePreview?.markerId,
+  );
   const error = (e: unknown) =>
     setNotice({
       text: e instanceof Error ? e.message : String(e),
@@ -516,6 +678,13 @@ export default function App() {
           ),
         );
       }
+      if (take.sourceHash && (await hashBlob(file)) !== take.sourceHash)
+        throw new Error(
+          t(
+            "This file has different contents from the original behind the evidence. Relink the original or import it as a new take.",
+            "此文件内容与证据对应的原素材不同。请关联原文件，或将其作为新版本导入。",
+          ),
+        );
       await writeMedia(take.id, file);
       patchTake(take.id, {
         ...metadata,
@@ -648,6 +817,8 @@ export default function App() {
     const key = (e: KeyboardEvent) => {
       if (
         dialog ||
+        inspection ||
+        framePreview ||
         busy ||
         e.ctrlKey ||
         e.metaKey ||
@@ -710,7 +881,13 @@ export default function App() {
       className="app"
       onDragEnter={(e) => {
         e.preventDefault();
-        if (e.dataTransfer.types.includes("Files") && !dialog && !busy) {
+        if (
+          e.dataTransfer.types.includes("Files") &&
+          !dialog &&
+          !busy &&
+          !inspection &&
+          !framePreview
+        ) {
           dragDepth.current++;
           setDragging(true);
         }
@@ -728,7 +905,7 @@ export default function App() {
         e.preventDefault();
         setDragging(false);
         dragDepth.current = 0;
-        if (!dialog && !busy)
+        if (!dialog && !busy && !inspection && !framePreview)
           void importFiles(Array.from(e.dataTransfer.files));
       }}
     >
@@ -982,6 +1159,15 @@ export default function App() {
                 <SlidersHorizontal size={16} />
                 {t("Details", "详情")}
               </button>
+              {selected && (
+                <button
+                  className="button frame-inspect-toggle"
+                  onClick={() => openFrames(selected)}
+                >
+                  <Crosshair size={15} />
+                  {t("Inspect frames", "检查源帧")}
+                </button>
+              )}
             </section>
             <div className="compare-toolbar" hidden={!shotTakes.length}>
               <div
@@ -1481,7 +1667,14 @@ export default function App() {
                         ),
                       }))
                     }
-                    revisit={(take, marker) => revealTake(take, marker.time)}
+                    revisit={(take, marker) =>
+                      marker.frame
+                        ? openFrames(take, marker.time)
+                        : revealTake(take, marker.time)
+                    }
+                    image={(take, marker) =>
+                      setFramePreview({ takeId: take.id, markerId: marker.id })
+                    }
                     record={(take) => {
                       revealTake(take);
                       setInspectorTab("record");
@@ -1754,7 +1947,7 @@ export default function App() {
                                     (take) => take.id !== id,
                                   ),
                                 },
-                                [id, ...selected.references.map((r) => r.id)],
+                                takeMediaIds(selected),
                               );
                             }}
                           >
@@ -1828,9 +2021,9 @@ export default function App() {
                             <div className={`marker-item ${m.kind}`} key={m.id}>
                               <button
                                 className="marker-time"
-                                disabled={m.time < selected.offset}
+                                disabled={!m.frame && m.time < selected.offset}
                                 title={
-                                  m.time < selected.offset
+                                  !m.frame && m.time < selected.offset
                                     ? t(
                                         "Before the review offset. Reduce the offset to revisit this marker.",
                                         "标记位于评审起点之前，请减小偏移后查看。",
@@ -1838,6 +2031,10 @@ export default function App() {
                                     : undefined
                                 }
                                 onClick={() => {
+                                  if (m.frame) {
+                                    openFrames(selected, m.time);
+                                    return;
+                                  }
                                   transport.pause();
                                   transport.seek(
                                     Math.max(0, m.time - selected.offset),
@@ -1849,6 +2046,21 @@ export default function App() {
                                 <Play size={10} />
                               </button>
                               <p>{m.text}</p>
+                              {m.frame && !blind && (
+                                <EvidenceThumbnail
+                                  frame={m.frame}
+                                  open={() =>
+                                    setFramePreview({
+                                      takeId: selected.id,
+                                      markerId: m.id,
+                                    })
+                                  }
+                                  label={t(
+                                    "View frame evidence",
+                                    "查看源帧证据",
+                                  )}
+                                />
+                              )}
                               <button
                                 className="marker-delete icon-button"
                                 aria-label={t(
@@ -1856,11 +2068,28 @@ export default function App() {
                                   `删除标记 ${m.text}`,
                                 )}
                                 onClick={() =>
-                                  patchTake(selected.id, {
-                                    markers: selected.markers.filter(
-                                      (x) => x.id !== m.id,
-                                    ),
-                                  })
+                                  m.frame
+                                    ? void removeMedia(
+                                        {
+                                          ...project,
+                                          takes: project.takes.map((take) =>
+                                            take.id === selected.id
+                                              ? {
+                                                  ...take,
+                                                  markers: take.markers.filter(
+                                                    (x) => x.id !== m.id,
+                                                  ),
+                                                }
+                                              : take,
+                                          ),
+                                        },
+                                        [m.frame.id],
+                                      )
+                                    : patchTake(selected.id, {
+                                        markers: selected.markers.filter(
+                                          (x) => x.id !== m.id,
+                                        ),
+                                      })
                                 }
                               >
                                 <X size={12} />
@@ -1917,6 +2146,39 @@ export default function App() {
               : t(`Add to ${shot?.name}`, `添加到 ${shot?.name}`)}
           </p>
         </div>
+      )}
+      {inspection &&
+        shotTakes.some((take) => take.id === inspection.takeId) && (
+          <FrameInspection
+            key={inspection.takeId}
+            takes={ordered}
+            initialId={inspection.takeId}
+            sourceTime={inspection.sourceTime}
+            blind={blind}
+            labelFor={labelFor}
+            t={t}
+            close={() => setInspection(null)}
+            align={alignActions}
+            save={saveFrameEvidence}
+            chooseWinner={(id) => verdict(id, "winner")}
+            decision={() => {
+              setInspection(null);
+              setInspectorOpen(true);
+              setInspectorTab("decision");
+            }}
+          />
+        )}
+      {previewTake && previewMarker?.frame && (
+        <FrameEvidenceView
+          take={previewTake}
+          marker={previewMarker}
+          t={t}
+          close={() => setFramePreview(null)}
+          revisit={() => {
+            setFramePreview(null);
+            openFrames(previewTake, previewMarker.time);
+          }}
+        />
       )}
       {notice && (
         <div

@@ -188,6 +188,7 @@ export function useTransport(duration: number, fps: number) {
     step,
     register,
     pause,
+    getTime: () => current.current,
   };
 }
 export type Transport = ReturnType<typeof useTransport>;

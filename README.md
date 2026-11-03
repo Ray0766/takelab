@@ -33,24 +33,27 @@ Open [localhost:4173](http://127.0.0.1:4173/), then choose **Open the sample pro
 
 **Details** opens the record panel when needed. The selected-take shortcut opens its decision; **Add marker** focuses the note at the current source time. The [interface design notes](docs/UI_CONTACT_SHEET_2026-11-03.md) document the references; the [larger-view revision](docs/UI_DENSITY_2026-11-03.md) includes measured before/after screenshots. Short windows scroll the comparison area to keep footage legible.
 
+**Inspect frames** pauses the overview and opens one or two original sources. Step by real presentation timestamps, magnify both views, or **Align action** by choosing the matching moment in each source. **Save frame evidence** attaches a full-frame PNG, observation, source timestamp and fingerprints to a marker. With a winner selected, it also links the marker to the shot's decision. See the [source-frame workflow and validation](docs/SOURCE_FRAMES_2026-11-03.md).
+
 ## What works
 
-| Workflow          | v0.1 behavior                                                                                                                |
-| ----------------- | ---------------------------------------------------------------------------------------------------------------------------- |
-| Import            | Multi-file picker or drag and drop; duplicate detection; optional shot grouping from `scene_take_01` / `scene_v02` filenames |
-| Compare           | 1 / 4 / 9-player layouts, shared transport, timeline seeking, looping, speed controls, per-take start offsets                |
-| Review            | One winner per shot, shortlist, rejection, hide rejected, filename/model search, keyboard shortcuts                          |
-| Blind selection   | Shuffles take order; hides filenames, model, prompt, references, seed and cost until revealed                                |
-| Annotations       | Timestamped issue, good-moment and note markers; jump back to a marker; delete it                                            |
-| Decision evidence | Winner + rationale + explicit cross-candidate source-time evidence, linked to generation records with stable IDs in exports  |
-| Generation record | Prompt, negative prompt, model/source, reference images, seed, freeform settings and manual USD cost                         |
-| Save              | Source blobs and project metadata in IndexedDB, automatically saved on this browser and origin                               |
-| Export            | Portable project ZIP, Markdown production record, silent side-by-side comparison video                                       |
-| Restore           | Import a project ZIP; relink missing sources while retaining review decisions and notes                                      |
+| Workflow          | v0.1 behavior                                                                                                                    |
+| ----------------- | -------------------------------------------------------------------------------------------------------------------------------- |
+| Import            | Multi-file picker or drag and drop; duplicate detection; optional shot grouping from `scene_take_01` / `scene_v02` filenames     |
+| Compare           | 1 / 4 / 9-player layouts, shared transport, timeline seeking, looping, speed controls, per-take start offsets                    |
+| Review            | One winner per shot, shortlist, rejection, hide rejected, filename/model search, keyboard shortcuts                              |
+| Blind selection   | Shuffles take order; hides filenames, model, prompt, references, seed and cost until revealed                                    |
+| Annotations       | Timestamped issue, good-moment and note markers; jump back to a marker; delete it                                                |
+| Source inspection | Real source-frame stepping, linked zoom, manual action anchors, full-frame PNG evidence; separate from nominal overview stepping |
+| Decision evidence | Winner + rationale + explicit cross-candidate source-time evidence, linked to generation records with stable IDs in exports      |
+| Generation record | Prompt, negative prompt, model/source, reference images, seed, freeform settings and manual USD cost                             |
+| Save              | Source blobs and project metadata in IndexedDB, automatically saved on this browser and origin                                   |
+| Export            | Portable project ZIP, Markdown production record, silent side-by-side comparison video                                           |
+| Restore           | Import a project ZIP; relink missing sources while retaining review decisions and notes                                          |
 
 ## Export choices
 
-- **Project ZIP** contains `project.json`, `record.md`, reference images, and optionally source videos. The uncompressed payload is limited to **512 MB** to bound browser memory. Larger projects can export records/references and keep original videos separately. ZIP restoration replaces the active project after confirmation.
+- **Project ZIP** contains `project.json`, `record.md`, reference images, evidence PNGs, and optionally source videos. The uncompressed payload is limited to **512 MB** to bound browser memory. Larger projects can export records/references/evidence and keep original videos separately. ZIP restoration replaces the active project after confirmation. Evidence images remain viewable without the originals; inspecting adjacent frames requires relinking them.
 - **Production record** is a readable Markdown report with all shots, verdicts, prompts, settings, costs and source-relative markers. Review FPS and offsets are included.
 - The decision section links each chosen take to its reason, supporting moments and source records. Empty reasons/evidence are marked incomplete. This is a traceable workflow, not a claim that it improves decision speed or quality; see [decisions](docs/DECISIONS.md) and [measured limits](docs/VALIDATION.md).
 - **Comparison video** records the current page from its aligned start, in real time, at 1280 pixels wide and at most 30 capture fps. Up to nine takes, maximum 120 seconds, no audio. It prefers VP9/VP8 WebM and falls back to a supported MP4 recorder. Keep the tab visible; hiding it cancels the recording. Review layouts with fewer takes reduce decoding load. Blind comparisons use anonymous labels.
@@ -63,7 +66,8 @@ Project and record export are disabled in blind mode until identities are reveal
 - Keep original files and export backups. Browser data can disappear after site-data clearing, private sessions or storage eviction. A different browser, hostname or port has a different workspace. Use one editing tab per origin; concurrent editing is not supported.
 - Only the current comparison page mounts video players. During export the review players are released and replaced with recording players. Nine 4K or high-bitrate sources can still exceed a device's decoder/memory capacity; use a 1- or 4-take view or external proxies.
 - H.264 MP4 and VP9 WebM are good starting formats. Container extensions such as MOV/MKV do not guarantee codec support. Import validates each file and reports unsupported sources without discarding successful imports.
-- “Frame step” means `1 / review FPS` seconds, with browser seeking. It does not detect source FPS and is not guaranteed to land on an exact source frame, especially with variable-frame-rate video. Sync corrects drift over 100 ms; this is visual review, not a mastering guarantee.
+- The **overview's** frame step means `1 / review FPS` seconds, with browser seeking. Sync corrects drift over 100 ms; nine-way playback and comparison recording are not frame locked. **Inspect frames** instead navigates actual source PTS and verifies the returned decoded timestamp. Mixed-FPS pairs select the last source frame at or before their offset-adjusted review time; their frame indices and timestamps need not be equal.
+- Exact inspection requires WebCodecs/OffscreenCanvas in a worker, a supported MP4/WebM/Matroska codec and SDR video. It is bounded to two sources, 2 GiB per source, 60,000 packets and 4096 × 2160 pixels (portrait supported). Unsupported timelines, HDR or codecs show an explicit fallback. Source fingerprinting reads the whole file on opening; it has a cost on large files. Up to 50 evidence PNGs per take / 500 per project, each at most 32 MiB. This is not calibrated color proofing or a forensic signature.
 - Costs are manually recorded in USD; unknown values stay blank. No model prices are fetched. The demo's model names are fictional and are not benchmark results.
 - One active project at a time, up to 200 videos per import / 3,000 per project. Reference images support PNG/JPEG/WebP/GIF, at most 20 MB each and 30 per take. No generation APIs, transcoding, cloud collaboration, automatic quality scoring or lossless video editing in this version.
 
@@ -73,6 +77,7 @@ Project and record export are disabled in blind mode until identities are reveal
 npm run check                 # Unit tests + TypeScript + production build
 npx playwright install chromium
 npm run test:e2e              # Real playback, files, persistence and exports
+npm run test:frames           # Requires FFmpeg: CFR/VFR/VP9/rotation and evidence round-trip
 npm run format:check
 ```
 
