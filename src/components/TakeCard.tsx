@@ -82,6 +82,7 @@ export function TakeCard({
   };
   return (
     <article
+      id={`take-${take.id}`}
       className={`take-card ${active ? "active" : ""} ${take.verdict}`}
       data-testid="take-card"
       onClick={select}

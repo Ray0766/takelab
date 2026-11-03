@@ -2,6 +2,8 @@
 
 ## Unreleased — traceable decisions and playback reliability
 
+- Give footage the full workspace width, combine desktop title/filter controls, and compact the playback dock. Preserve larger images with scrolling in short windows; evidence/selection shortcuts scroll the corresponding source into view.
+
 - Rebuild the interface as a contact sheet: horizontal shot directory, unboxed footage with letter captions, cobalt identity and locally bundled OFL display typography. Records start closed; the selected-take shortcut opens the decision and reveals its source at the current review moment.
 - Preserve player instances while details are hidden; reopen and focus the marker composer from playback controls. Keep previews legible in short windows.
 - Freeze the actual media clock and publish the final time on pause, fixing a readout that could lag by one nominal frame between UI updates.

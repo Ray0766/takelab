@@ -146,10 +146,10 @@ kbd {
   flex: none;
   display: flex;
   align-items: center;
-  gap: 16px;
-  padding: 0 32px;
   background: #fff;
-  height: 64px;
+  height: 50px;
+  padding: 0 16px;
+  gap: 12px;
 }
 .brand {
   display: flex;
@@ -164,7 +164,7 @@ kbd {
   font-weight: 600;
   line-height: 1;
   letter-spacing: -1.4px;
-  font-size: 34px;
+  font-size: 30px;
 }
 .brand-mark {
   position: relative;
@@ -260,10 +260,10 @@ kbd {
 .workbench {
   display: grid;
   grid-template-columns: minmax(0, 1fr) 340px;
-  grid-template-rows: 48px minmax(0, 1fr);
   grid-template-areas: "shots shots" "stage notes";
   flex: 1;
   min-height: 0;
+  grid-template-rows: 36px minmax(0, 1fr);
 }
 .workbench.inspector-closed {
   grid-template-columns: minmax(0, 1fr);
@@ -301,10 +301,10 @@ kbd {
   padding: 0 2px;
   gap: 7px;
   text-align: left;
-  min-height: 46px;
   border-radius: 0;
   max-width: 260px;
   border-bottom: 2px solid transparent;
+  min-height: 34px;
 }
 .shot-item.selected {
   color: var(--blue);
@@ -367,8 +367,10 @@ kbd {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 16px;
-  padding: 16px 32px 4px;
+  padding: 0;
+  gap: 10px;
+  flex: 1 1 260px;
+  min-width: min(100%, 370px);
 }
 .shot-header > div:first-child {
   min-width: 0;
@@ -384,26 +386,24 @@ kbd {
 .shot-title > input {
   font-family: var(--display);
   font-weight: 600;
-  width: min(100%, 460px);
   padding: 0;
   background: transparent;
   border-color: transparent;
   text-overflow: ellipsis;
   line-height: 1.2;
-  font-size: 32px;
-  letter-spacing: -0.7px;
+  font-size: 20px;
+  width: min(100%, 240px);
+  letter-spacing: -0.4px;
 }
 .shot-title > input:hover {
   border-bottom-color: #b8bfcd;
 }
-.shot-title .count {
-  display: none;
-}
 .details-toggle {
   color: var(--blue);
-  padding: 8px 12px;
   border-color: #bdc7ee;
   background: #f9faff;
+  min-height: 32px;
+  padding: 5px 9px;
 }
 .details-toggle[aria-expanded="true"] {
   color: #fff;
@@ -413,10 +413,11 @@ kbd {
 .compare-toolbar {
   display: flex;
   align-items: center;
-  gap: 14px;
-  flex: none;
-  min-height: 44px;
-  padding: 4px 32px 10px;
+  padding: 0;
+  gap: 10px;
+  flex: 2 1 650px;
+  min-width: 0;
+  min-height: 34px;
 }
 .filter-tabs {
   display: flex;
@@ -552,49 +553,41 @@ kbd {
   flex: 1;
   min-height: 0;
   overflow: auto;
-  padding: 6px 32px 20px;
   background: var(--canvas);
   scrollbar-width: thin;
   scrollbar-color: #b8bfcd transparent;
-  container-type: size;
+  padding: 4px 12px 8px;
 }
 .take-grid {
   display: grid;
-  gap: 18px 20px;
   height: 100%;
   grid-template-rows: repeat(var(--rows), minmax(0, 1fr));
-  max-width: 1500px;
-  margin-inline: auto;
+  gap: 8px;
+  width: 100%;
+  max-width: none;
+  margin-inline: 0;
 }
 .grid-9 {
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  grid-template-rows: repeat(var(--rows), minmax(168px, 1fr));
   width: 100%;
-  max-width: max(
-    720px,
-    calc(
-      (100cqh - var(--rows) * 38px - (var(--rows) - 1) * 18px) / var(--rows) *
-        16 / 9 * 3 + 40px
-    )
-  );
+  grid-template-rows: repeat(var(--rows), minmax(220px, 1fr));
 }
 .grid-4 {
   width: 100%;
-  max-width: max(
-    480px,
-    calc(
-      (100cqh - var(--rows) * 38px - (var(--rows) - 1) * 18px) / var(--rows) *
-        16 / 9 * 2 + 20px
-    )
-  );
   grid-template-columns: repeat(2, minmax(0, 1fr));
   grid-template-rows: repeat(var(--rows), minmax(220px, 1fr));
 }
 .grid-4 .take-card {
-  align-self: center;
-  max-height: 100%;
+  align-self: stretch;
 }
 .grid-4 .take-visual {
+  flex: 1;
+}
+.take-grid.single-row:not(.grid-1) .take-card {
+  align-self: start;
+  max-height: 100%;
+}
+.take-grid.single-row:not(.grid-1) .take-visual {
   flex: 0 1 auto;
   aspect-ratio: 16 / 9;
 }
@@ -625,13 +618,13 @@ kbd {
 }
 .take-visual {
   flex: 1;
-  min-height: 120px;
   position: relative;
   background: #191d24;
   overflow: hidden;
   border-radius: 3px;
   outline: 1px solid transparent;
   outline-offset: 3px;
+  min-height: 140px;
 }
 .take-visual video {
   width: 100%;
@@ -649,9 +642,9 @@ kbd {
   flex: none;
   border-radius: 0;
   font-family: var(--display);
-  font-size: 26px;
   font-weight: 600;
   color: #858c9a;
+  font-size: 24px;
 }
 .take-letter {
   font-variant-numeric: tabular-nums;
@@ -704,12 +697,12 @@ kbd {
 .take-card-footer {
   display: flex;
   align-items: center;
-  gap: 10px;
   justify-content: space-between;
-  padding: 8px 0 0;
-  height: 38px;
-  min-height: 38px;
   flex: none;
+  height: 34px;
+  min-height: 34px;
+  padding: 4px 2px 0;
+  gap: 8px;
 }
 .take-caption {
   min-width: 0;
@@ -808,7 +801,7 @@ kbd {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 5px 22px;
+  padding: 0 12px 4px;
   color: var(--muted);
   font-size: 12px;
   background: var(--canvas);
@@ -821,18 +814,22 @@ kbd {
 .transport {
   background: #fff;
   border: 1px solid #dce0e7;
-  border-radius: 12px;
   flex: none;
-  padding: 12px 20px 8px;
-  margin: 0 32px 18px;
-  box-shadow: 0 5px 14px #20243005;
+  display: grid;
+  grid-template-columns: auto minmax(160px, 1fr) auto;
+  column-gap: 18px;
+  row-gap: 5px;
+  padding: 8px 12px 6px;
+  margin: 0 12px 8px;
+  border-radius: 8px;
+  box-shadow: none;
 }
 .transport-main {
-  display: flex;
   justify-content: space-between;
   align-items: center;
   gap: 12px;
-  margin-bottom: 12px;
+  display: contents;
+  margin-bottom: 0;
 }
 .transport-left,
 .transport-right {
@@ -852,11 +849,11 @@ kbd {
 }
 .time-readout {
   font-family: var(--display);
-  font-size: 24px;
   white-space: nowrap;
   font-variant-numeric: tabular-nums;
-  margin-left: 14px;
   letter-spacing: -0.5px;
+  font-size: 22px;
+  margin-left: 6px;
 }
 .time-readout strong {
   font-weight: 600;
@@ -956,7 +953,9 @@ kbd {
   gap: 8px;
   color: var(--muted);
   font-size: 10px;
-  margin-top: 8px;
+  grid-column: 1 / -1;
+  grid-row: 2;
+  margin-top: 0;
 }
 .transport-foot > span {
   display: flex;
@@ -1914,15 +1913,36 @@ kbd {
 }
 .selection-summary {
   color: var(--green);
-  padding: 7px 10px;
-  gap: 7px;
   flex: none;
   font-size: 12px;
   text-align: left;
+  padding: 5px 6px;
+  gap: 5px;
 }
 .selection-summary small {
   color: var(--muted);
   font-size: 11px;
+}
+.review-tools {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px 14px;
+  padding: 6px 12px;
+  flex: none;
+}
+.transport-left {
+  grid-column: 1;
+  grid-row: 1;
+}
+.transport-right {
+  grid-column: 3;
+  grid-row: 1;
+}
+.timeline {
+  grid-column: 2;
+  grid-row: 1;
+  min-width: 0;
 }
 @media (prefers-reduced-motion: reduce) {
   *,
@@ -1976,11 +1996,11 @@ textarea::placeholder {
   grid-area: shots;
   display: flex;
   align-items: stretch;
-  gap: 20px;
-  padding: 0 32px;
   background: #fff;
   border-block: 1px solid var(--line);
   min-width: 0;
+  padding: 0 16px;
+  gap: 16px;
 }
 .sidebar-heading > .count {
   display: none;
@@ -1988,11 +2008,6 @@ textarea::placeholder {
 .shot-item:hover {
   background: transparent;
   color: var(--blue);
-}
-.shot-context {
-  font-size: 11px;
-  color: var(--muted);
-  white-space: nowrap;
 }
 .take-card.active .take-visual {
   outline-color: var(--blue);
@@ -2063,7 +2078,7 @@ textarea::placeholder {
 }
 @media (max-width: 1150px) {
   .topbar {
-    padding-inline: 24px;
+    padding-inline: 16px;
     gap: 12px;
   }
   .save-status {
@@ -2076,7 +2091,7 @@ textarea::placeholder {
     grid-template-columns: minmax(0, 1fr) 310px;
   }
   .shot-strip {
-    padding-inline: 24px;
+    padding-inline: 16px;
     gap: 14px;
   }
   .shot-list {
@@ -2088,36 +2103,16 @@ textarea::placeholder {
   .sidebar-help {
     font-size: 0;
   }
-  .shot-header,
-  .compare-toolbar,
-  .grid-scroller {
-    padding-inline: 24px;
-  }
-  .shot-context {
-    display: none;
-  }
-  .compare-toolbar {
-    flex-wrap: wrap;
-    gap: 8px;
-  }
   .compare-options {
     margin-left: auto;
   }
-  .view-filters {
-    order: 3;
-    width: 100%;
-    justify-content: space-between;
-  }
   .transport {
-    margin-inline: 24px;
+    margin-inline: 12px;
     padding-inline: 14px;
   }
   .time-readout {
     font-size: 20px;
     margin-left: 6px;
-  }
-  .take-grid {
-    gap: 16px 14px;
   }
   .take-card-footer {
     gap: 5px;
@@ -2127,6 +2122,16 @@ textarea::placeholder {
   }
   .marker-button kbd {
     display: none;
+  }
+  .transport {
+    display: block;
+  }
+  .transport-main {
+    display: flex;
+    margin-bottom: 10px;
+  }
+  .transport-foot {
+    margin-top: 8px;
   }
 }
 @media (max-width: 850px) {
@@ -2183,13 +2188,13 @@ textarea::placeholder {
     min-height: 47px;
   }
   .shot-header {
-    padding: 22px 20px 8px;
+    padding: 0;
   }
   .shot-title > input {
-    font-size: 30px;
+    font-size: 24px;
   }
   .compare-toolbar {
-    padding-inline: 20px;
+    padding-inline: 0;
   }
   .grid-scroller {
     overflow: visible;
@@ -2199,7 +2204,7 @@ textarea::placeholder {
   .take-grid {
     height: auto;
     grid-template-rows: auto;
-    gap: 20px 16px;
+    gap: 14px 10px;
   }
   .grid-9,
   .grid-4 {
@@ -2209,6 +2214,7 @@ textarea::placeholder {
     aspect-ratio: 16 / 9;
     flex: auto;
     min-height: 0;
+    flex: none;
   }
   .take-card-footer {
     height: 40px;
@@ -2274,6 +2280,29 @@ textarea::placeholder {
   .grid-4 {
     max-width: none;
   }
+  .review-tools {
+    padding: 12px 16px 8px;
+    gap: 8px;
+  }
+  .shot-header,
+  .compare-toolbar {
+    flex-basis: 100%;
+  }
+  .compare-toolbar {
+    flex-wrap: wrap;
+  }
+  .view-filters {
+    order: 3;
+    width: 100%;
+    justify-content: space-between;
+  }
+  .grid-4 .take-visual {
+    flex: none;
+    aspect-ratio: 16 / 9;
+  }
+  .grid-scroller {
+    padding: 4px 12px 16px;
+  }
 }
 @media (max-width: 520px) {
   .topbar {
@@ -2301,10 +2330,10 @@ textarea::placeholder {
     display: none;
   }
   .shot-header {
-    padding-inline: 16px;
+    padding-inline: 0;
   }
   .shot-title > input {
-    font-size: 27px;
+    font-size: 22px;
     letter-spacing: -0.8px;
   }
   .details-toggle {
@@ -2312,7 +2341,7 @@ textarea::placeholder {
     font-size: 12px;
   }
   .compare-toolbar {
-    padding-inline: 16px;
+    padding-inline: 0;
     gap: 9px;
   }
   .filter-tabs {
@@ -2350,10 +2379,10 @@ textarea::placeholder {
     width: 120px;
   }
   .grid-scroller {
-    padding-inline: 16px;
+    padding-inline: 10px;
   }
   .take-grid {
-    gap: 20px 12px;
+    gap: 12px 8px;
   }
   .take-card-footer {
     flex-wrap: wrap;
@@ -2458,12 +2487,13 @@ textarea::placeholder {
   }
   .selection-summary {
     flex-wrap: wrap;
-    width: 68px;
+    width: 78px;
     font-size: 11px;
     padding: 5px;
     gap: 3px;
   }
   .selection-summary small {
     font-size: 10px;
+    white-space: nowrap;
   }
 }

@@ -6,7 +6,7 @@ AI 视频选片台：比较同一镜头的多个生成版本，选出可用素�
 
 [中文说明](README.zh-CN.md) · [User guide](docs/USER_GUIDE.md) · [Architecture](docs/ARCHITECTURE.md) · [Contributing](CONTRIBUTING.md)
 
-![TakeLab: nine synchronized takes and a generation record](docs/screenshot.png)
+![TakeLab: nine synchronized takes with shared playback controls](docs/screenshot.png)
 
 TakeLab is a local-first video review desk for the moment _after_ generation. Bring files from different models or cameras, compare them together, and keep the prompt and notes behind your decision. No account, API key, paid generation, or media upload is required.
 
@@ -31,7 +31,7 @@ Open [localhost:4173](http://127.0.0.1:4173/), then choose **Open the sample pro
 4. Press **M** to leave a note at the current source time.
 5. Open **Decision**, write a reason and link supporting markers, including flaws in rejected candidates. Reveal the generation record and export the result.
 
-**Details** opens the record panel when needed. The selected-take shortcut opens its decision; **Add marker** focuses the note at the current source time. The [interface design notes](docs/UI_CONTACT_SHEET_2026-11-03.md) document the visual references, research rationale and untested assumptions.
+**Details** opens the record panel when needed. The selected-take shortcut opens its decision; **Add marker** focuses the note at the current source time. The [interface design notes](docs/UI_CONTACT_SHEET_2026-11-03.md) document the references; the [larger-view revision](docs/UI_DENSITY_2026-11-03.md) includes measured before/after screenshots. Short windows scroll the comparison area to keep footage legible.
 
 ## What works
 

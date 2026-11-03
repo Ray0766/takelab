@@ -1,0 +1,158 @@
+[
+  {
+    "name": "1440x1000-9-canvas",
+    "width": 1440,
+    "height": 1000,
+    "grid": {
+      "x": 296.796875,
+      "y": 228.390625,
+      "width": 846.40625,
+      "height": 603.609375,
+      "bottom": 832
+    },
+    "details": false,
+    "videoElement": {
+      "x": 296.796875,
+      "y": 228.390625,
+      "width": 268.796875,
+      "height": 151.203125,
+      "bottom": 379.59375
+    },
+    "sourcePicture": {
+      "width": 268.796875,
+      "height": 151.1982421875
+    },
+    "stage": {
+      "x": 0,
+      "y": 222.390625,
+      "width": 1440,
+      "height": 629.609375,
+      "bottom": 852
+    },
+    "transport": {
+      "x": 32,
+      "y": 852,
+      "width": 1376,
+      "height": 130,
+      "bottom": 982
+    },
+    "overflowX": false
+  },
+  {
+    "name": "1440x1000-4-canvas",
+    "width": 1440,
+    "height": 1000,
+    "grid": {
+      "x": 292.5625,
+      "y": 228.390625,
+      "width": 854.859375,
+      "height": 563.609375,
+      "bottom": 792
+    },
+    "details": false,
+    "videoElement": {
+      "x": 292.5625,
+      "y": 228.390625,
+      "width": 417.421875,
+      "height": 234.796875,
+      "bottom": 463.1875
+    },
+    "sourcePicture": {
+      "width": 417.4166666666667,
+      "height": 234.796875
+    },
+    "stage": {
+      "x": 0,
+      "y": 222.390625,
+      "width": 1440,
+      "height": 589.609375,
+      "bottom": 812
+    },
+    "transport": {
+      "x": 32,
+      "y": 852,
+      "width": 1376,
+      "height": 130,
+      "bottom": 982
+    },
+    "overflowX": false
+  },
+  {
+    "name": "1440x900-9-canvas",
+    "width": 1440,
+    "height": 900,
+    "grid": {
+      "x": 360,
+      "y": 228.390625,
+      "width": 720,
+      "height": 503.609375,
+      "bottom": 732
+    },
+    "details": false,
+    "videoElement": {
+      "x": 360,
+      "y": 228.390625,
+      "width": 226.65625,
+      "height": 130,
+      "bottom": 358.390625
+    },
+    "sourcePicture": {
+      "width": 226.65625,
+      "height": 127.49414062499999
+    },
+    "stage": {
+      "x": 0,
+      "y": 222.390625,
+      "width": 1440,
+      "height": 529.609375,
+      "bottom": 752
+    },
+    "transport": {
+      "x": 32,
+      "y": 752,
+      "width": 1376,
+      "height": 130,
+      "bottom": 882
+    },
+    "overflowX": false
+  },
+  {
+    "name": "1280x720-9-record",
+    "width": 1280,
+    "height": 720,
+    "grid": {
+      "x": 110,
+      "y": 228.390625,
+      "width": 720,
+      "height": 323.609375,
+      "bottom": 552
+    },
+    "details": true,
+    "videoElement": {
+      "x": 110,
+      "y": 228.390625,
+      "width": 226.65625,
+      "height": 130,
+      "bottom": 358.390625
+    },
+    "sourcePicture": {
+      "width": 226.65625,
+      "height": 127.49414062499999
+    },
+    "stage": {
+      "x": 0,
+      "y": 222.390625,
+      "width": 940,
+      "height": 349.609375,
+      "bottom": 572
+    },
+    "transport": {
+      "x": 32,
+      "y": 572,
+      "width": 876,
+      "height": 130,
+      "bottom": 702
+    },
+    "overflowX": false
+  }
+]

@@ -10,9 +10,9 @@ Drag videos onto the workbench or use Import videos. Files go into the current s
 
 The current page's longest offset-adjusted take defines the timeline. A start offset of 2 seconds means review time 0 corresponds to source time 2. Shorter takes hold their final frame. Changing page, shot, grid or filter pauses playback; changing the layout/filter resets the review position. Clicking a take makes its inspector and audio controls active. All videos begin muted; only the selected take can be heard.
 
-Records start closed. Use **Details** to open or hide the record panel without restarting the players. The **Selected / Review decision** shortcut reveals the winner and its decision at the current review time. Selecting a preview leaves a hidden panel closed; its letter button opens the inspector. **Add marker** or **M** opens the panel and focuses the note. In short desktop windows, scroll the preview area or switch to 1/4 view rather than squeezing all nine videos into tiny strips.
+Records start closed. Use **Details** to open or hide the record panel without restarting the players. The **Selected / Review decision** shortcut reveals the winner and its decision at the current review time, scrolling the source into view when needed. Selecting a preview leaves a hidden panel closed; its letter button opens the inspector. **Add marker** or **M** opens the panel and focuses the note. In short desktop windows, scroll the preview area or switch to 1/4 view rather than squeezing all nine videos into tiny strips.
 
-记录默认收起。点击 **详情** 可展开或收起，播放实例会保留。点击 **已选版本 / 查看选片依据** 可在当前评审时刻定位选定素材与依据。收起后点画面只切换当前版本；点画面下方字母可打开详情。**添加标记** 或 **M** 会展开面板并定位到输入框。窗口较矮时可滚动对比区，或切换单屏／四宫格。
+记录默认收起。点击 **详情** 可展开或收起，播放实例会保留。点击 **已选版本 / 查看选片依据** 可在当前评审时刻定位选定素材与依据，并将视频滚动到可见位置。收起后点画面只切换当前版本；点画面下方字母可打开详情。**添加标记** 或 **M** 会展开面板并定位到输入框。窗口较矮时可滚动对比区，或切换单屏／四宫格。
 
 标记时间始终相对于源视频，和起始偏移无关。例如偏移为 2 秒，评审时间 1 秒添加的标记记录为素材时间 3 秒。调整偏移不会改变旧标记；偏移之前的标记无法在当前对比区间回看，请先减小偏移。
 

@@ -43,6 +43,20 @@ test("comparison can expand without remounting players and return to a focused m
     fullPage: true,
   });
   await expect(page.locator(".inspector")).toBeHidden();
+  const ninePicture = await page
+    .locator("video")
+    .first()
+    .evaluate((v) => {
+      const box = v.getBoundingClientRect();
+      const scale = Math.min(
+        box.width / v.videoWidth,
+        box.height / v.videoHeight,
+      );
+      return { width: v.videoWidth * scale, height: v.videoHeight * scale };
+    });
+  // At 1440 × 1000, measure the source picture, excluding letterboxing.
+  expect(ninePicture.width).toBeGreaterThanOrEqual(360);
+  expect(ninePicture.height).toBeGreaterThanOrEqual(200);
   await page.getByRole("button", { name: "Details", exact: true }).click();
   const player = await page.locator("video").first().elementHandle();
   await page
@@ -142,6 +156,19 @@ test("comparison can expand without remounting players and return to a focused m
     animations: "disabled",
   });
   // Every footer must sit outside its source image, with no row overlap.
+  const fourPicture = await page
+    .locator("video")
+    .first()
+    .evaluate((v) => {
+      const box = v.getBoundingClientRect();
+      const scale = Math.min(
+        box.width / v.videoWidth,
+        box.height / v.videoHeight,
+      );
+      return { width: v.videoWidth * scale, height: v.videoHeight * scale };
+    });
+  expect(fourPicture.width).toBeGreaterThanOrEqual(560);
+  expect(fourPicture.height).toBeGreaterThanOrEqual(315);
   const bounds = await page.locator(".take-card").evaluateAll((cards) =>
     cards.map((card) => {
       const visual = card
@@ -162,6 +189,7 @@ test("comparison can expand without remounting players and return to a focused m
     expect(b.footerTop).toBeGreaterThanOrEqual(b.bottom - 1);
   expect(bounds[2].top).toBeGreaterThan(bounds[0].footerBottom);
   // The selected take can be on another page; the shortcut must reveal it.
+  await page.setViewportSize({ width: 1280, height: 720 });
   await page
     .getByRole("button", { name: "Selected G Review decision", exact: true })
     .click();
@@ -170,6 +198,12 @@ test("comparison can expand without remounting players and return to a focused m
   );
   await expect(page.getByTestId("timecode")).toHaveText("00:03:00");
   await expect(page.locator("video")).toHaveCount(4);
+  const revealed = await page.locator(".take-card.active").evaluate((card) => {
+    const source = card.querySelector("video")!.getBoundingClientRect();
+    const stage = card.closest(".grid-scroller")!.getBoundingClientRect();
+    return source.top >= stage.top - 1 && source.bottom <= stage.bottom + 1;
+  });
+  expect(revealed).toBe(true);
   await page
     .getByLabel("Shot name")
     .fill("Very long shot name / 雨夜街道上的长镜头与多次生成版本");

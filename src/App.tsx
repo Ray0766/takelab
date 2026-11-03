@@ -228,6 +228,9 @@ export default function App() {
   );
   const duration = reviewDuration(visible);
   const layout = visible.length === 1 ? 1 : visible.length === 2 ? 4 : grid;
+  const rows = Math.ceil(
+    visible.length / (layout === 9 ? 3 : layout === 4 ? 2 : 1),
+  );
   const transport = useTransport(duration, project?.fps || 24);
   const selected = project?.takes.find((take) => take.id === selectedId);
   const shotWinner = shotTakes.find((take) => take.verdict === "winner");
@@ -260,6 +263,10 @@ export default function App() {
     setSelectedId(revisitTarget.id);
     transport.pause();
     transport.seek(revisitTarget.time);
+    document.getElementById(`take-${revisitTarget.id}`)?.scrollIntoView({
+      block: "nearest",
+      inline: "nearest",
+    });
     setRevisitTarget(null);
   }, [revisitTarget, filtered, page, grid]);
   const revealTake = (take: Take, sourceTime = take.offset) => {
@@ -911,148 +918,153 @@ export default function App() {
         </aside>
 
         <main className="main-panel">
-          <section className="shot-header">
-            <div>
-              <div className="shot-title">
-                <input
-                  aria-label={t("Shot name", "镜头名称")}
-                  value={shot?.name || ""}
-                  maxLength={200}
-                  onChange={(e) =>
-                    update((p) => ({
-                      ...p,
-                      shots: p.shots.map((s) =>
-                        s.id === shotId ? { ...s, name: e.target.value } : s,
-                      ),
-                    }))
-                  }
-                />
-                {!shotTakes.length && project.shots.length > 1 && (
-                  <button
-                    className="icon-button"
-                    aria-label={t("Delete empty shot", "删除空镜头")}
-                    onClick={() => {
+          <div className="review-tools">
+            <section className="shot-header">
+              <div>
+                <div className="shot-title">
+                  <input
+                    aria-label={t("Shot name", "镜头名称")}
+                    value={shot?.name || ""}
+                    maxLength={200}
+                    onChange={(e) =>
                       update((p) => ({
                         ...p,
-                        shots: p.shots.filter((s) => s.id !== shotId),
-                      }));
-                      setShotId(project.shots.find((s) => s.id !== shotId)!.id);
-                    }}
-                  >
-                    <Trash2 size={14} />
-                  </button>
+                        shots: p.shots.map((s) =>
+                          s.id === shotId ? { ...s, name: e.target.value } : s,
+                        ),
+                      }))
+                    }
+                  />
+                  {!shotTakes.length && project.shots.length > 1 && (
+                    <button
+                      className="icon-button"
+                      aria-label={t("Delete empty shot", "删除空镜头")}
+                      onClick={() => {
+                        update((p) => ({
+                          ...p,
+                          shots: p.shots.filter((s) => s.id !== shotId),
+                        }));
+                        setShotId(
+                          project.shots.find((s) => s.id !== shotId)!.id,
+                        );
+                      }}
+                    >
+                      <Trash2 size={14} />
+                    </button>
+                  )}
+                </div>
+              </div>
+              {shotWinner && !blind && (
+                <button
+                  className="selection-summary"
+                  onClick={() => {
+                    revealTake(shotWinner, transport.time + shotWinner.offset);
+                    setInspectorOpen(true);
+                    setInspectorTab("decision");
+                  }}
+                >
+                  <Check size={16} />
+                  <span>
+                    {t("Selected", "已选")}{" "}
+                    {labelFor(shotWinner).split(" · ")[0]}
+                  </span>
+                  <small>{t("Review decision", "查看选片依据")}</small>
+                </button>
+              )}
+              <button
+                className="button details-toggle"
+                hidden={!selected}
+                disabled={!selected}
+                aria-expanded={inspectorOpen && !!selected}
+                aria-controls="take-inspector"
+                onClick={() => setInspectorOpen(!inspectorOpen)}
+              >
+                <SlidersHorizontal size={16} />
+                {t("Details", "详情")}
+              </button>
+            </section>
+            <div className="compare-toolbar" hidden={!shotTakes.length}>
+              <div
+                className="filter-tabs"
+                role="group"
+                aria-label={t("Filter takes", "筛选版本")}
+              >
+                <button
+                  className={filter === "all" ? "active" : ""}
+                  onClick={() => setFilter("all")}
+                >
+                  {t("All takes", "全部")}
+                  <span>{shotTakes.length}</span>
+                </button>
+                <button
+                  className={filter === "shortlisted" ? "active" : ""}
+                  onClick={() => setFilter("shortlisted")}
+                >
+                  <Star size={12} />
+                  {t("Shortlist", "入围")}
+                </button>
+              </div>
+              <div className="view-filters">
+                <label className="hide-rejected">
+                  <input
+                    type="checkbox"
+                    checked={hideRejected}
+                    onChange={(e) => setHideRejected(e.target.checked)}
+                  />
+                  {t("Hide rejected", "隐藏淘汰")}
+                </label>
+                {!blind && (
+                  <label className="take-search">
+                    <Search size={12} />
+                    <input
+                      aria-label={t("Search takes", "搜索版本")}
+                      placeholder={t("Find take…", "查找版本…")}
+                      value={search}
+                      onChange={(e) => setSearch(e.target.value)}
+                    />
+                  </label>
                 )}
               </div>
-            </div>
-            {shotWinner && !blind && (
-              <button
-                className="selection-summary"
-                onClick={() => {
-                  revealTake(shotWinner, transport.time + shotWinner.offset);
-                  setInspectorOpen(true);
-                  setInspectorTab("decision");
-                }}
-              >
-                <Check size={16} />
-                <span>
-                  {t("Selected", "已选")} {labelFor(shotWinner).split(" · ")[0]}
-                </span>
-                <small>{t("Review decision", "查看选片依据")}</small>
-              </button>
-            )}
-            <button
-              className="button details-toggle"
-              hidden={!selected}
-              disabled={!selected}
-              aria-expanded={inspectorOpen && !!selected}
-              aria-controls="take-inspector"
-              onClick={() => setInspectorOpen(!inspectorOpen)}
-            >
-              <SlidersHorizontal size={16} />
-              {t("Details", "详情")}
-            </button>
-          </section>
-          <div className="compare-toolbar" hidden={!shotTakes.length}>
-            <div
-              className="filter-tabs"
-              role="group"
-              aria-label={t("Filter takes", "筛选版本")}
-            >
-              <button
-                className={filter === "all" ? "active" : ""}
-                onClick={() => setFilter("all")}
-              >
-                {t("All takes", "全部")}
-                <span>{shotTakes.length}</span>
-              </button>
-              <button
-                className={filter === "shortlisted" ? "active" : ""}
-                onClick={() => setFilter("shortlisted")}
-              >
-                <Star size={12} />
-                {t("Shortlist", "入围")}
-              </button>
-            </div>
-            <div className="view-filters">
-              <label className="hide-rejected">
-                <input
-                  type="checkbox"
-                  checked={hideRejected}
-                  onChange={(e) => setHideRejected(e.target.checked)}
-                />
-                {t("Hide rejected", "隐藏淘汰")}
-              </label>
-              {!blind && (
-                <label className="take-search">
-                  <Search size={12} />
-                  <input
-                    aria-label={t("Search takes", "搜索版本")}
-                    placeholder={t("Find take…", "查找版本…")}
-                    value={search}
-                    onChange={(e) => setSearch(e.target.value)}
-                  />
-                </label>
-              )}
-            </div>
-            <div className="compare-options">
-              <button
-                className={`blind-toggle ${blind ? "enabled" : ""}`}
-                onClick={() => {
-                  setBlind(!blind);
-                  if (!blind) {
-                    setBlindSeed(Math.floor(Math.random() * 1e9));
-                    setSearch("");
-                  }
-                }}
-              >
-                {blind ? <EyeOff size={14} /> : <Eye size={14} />}
-                <span>{t("Blind mode", "盲选模式")}</span>
-                <i />
-              </button>
-              <span className="toolbar-divider" />
-              <div
-                className="grid-options"
-                role="group"
-                aria-label={t("Grid layout", "对比布局")}
-              >
-                {[
-                  [1, Maximize],
-                  [4, Grid2X2],
-                  [9, Grid3X3],
-                ].map(([value, Icon]) => {
-                  const Component = Icon as typeof Grid2X2;
-                  return (
-                    <button
-                      key={String(value)}
-                      className={grid === value ? "active" : ""}
-                      onClick={() => setGrid(value as number)}
-                      aria-label={t(`${value} view`, `${value} 宫格`)}
-                      title={t(`${value} view`, `${value} 宫格`)}
-                    >
-                      <Component size={15} />
-                    </button>
-                  );
-                })}
+              <div className="compare-options">
+                <button
+                  className={`blind-toggle ${blind ? "enabled" : ""}`}
+                  onClick={() => {
+                    setBlind(!blind);
+                    if (!blind) {
+                      setBlindSeed(Math.floor(Math.random() * 1e9));
+                      setSearch("");
+                    }
+                  }}
+                >
+                  {blind ? <EyeOff size={14} /> : <Eye size={14} />}
+                  <span>{t("Blind mode", "盲选模式")}</span>
+                  <i />
+                </button>
+                <span className="toolbar-divider" />
+                <div
+                  className="grid-options"
+                  role="group"
+                  aria-label={t("Grid layout", "对比布局")}
+                >
+                  {[
+                    [1, Maximize],
+                    [4, Grid2X2],
+                    [9, Grid3X3],
+                  ].map(([value, Icon]) => {
+                    const Component = Icon as typeof Grid2X2;
+                    return (
+                      <button
+                        key={String(value)}
+                        className={grid === value ? "active" : ""}
+                        onClick={() => setGrid(value as number)}
+                        aria-label={t(`${value} view`, `${value} 宫格`)}
+                        title={t(`${value} view`, `${value} 宫格`)}
+                      >
+                        <Component size={15} />
+                      </button>
+                    );
+                  })}
+                </div>
               </div>
             </div>
           </div>
@@ -1071,13 +1083,10 @@ export default function App() {
           <div className="grid-scroller">
             {visible.length ? (
               <div
-                className={`take-grid grid-${layout}`}
+                className={`take-grid grid-${layout} ${rows === 1 ? "single-row" : ""}`}
                 style={
                   {
-                    "--rows": Math.ceil(
-                      visible.length /
-                        (layout === 9 ? 3 : layout === 4 ? 2 : 1),
-                    ),
+                    "--rows": rows,
                   } as CSSProperties
                 }
               >

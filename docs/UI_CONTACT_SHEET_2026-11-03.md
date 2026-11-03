@@ -1,5 +1,7 @@
 # Contact-sheet interface · 2026-11-03
 
+> The later [density revision](UI_DENSITY_2026-11-03.md) supersedes the spacing, control heights and height-derived maximum grid width below. The reference analysis and local typography remain applicable.
+
 ## Brief and choice
 
 Ray rejected the previous light three-column workbench and explicitly chose a more expressive visual direction, with stronger typography and composition. This revision supersedes the layout and visual rules in [the previous design record](UI_REDESIGN_2026-11-03.md); that record remains the source of the reference review and its access limitations.

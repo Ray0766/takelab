@@ -74,3 +74,7 @@ The change removes repeated headings/statistics, enlarges previews, makes record
 ## Contact-sheet redesign after a second rejection
 
 Ray explicitly chose stronger typography and composition. Replace the permanent vertical shot navigation with a horizontal directory and use a contact sheet with letter captions, a shared playback dock and records closed by default. The selected-take shortcut reveals the actual winner and decision at the current review moment, including across pagination. Empty-state typography uses an independently licensed, locally bundled Bricolage Grotesque font; no dependency or decoder migration. See [alternatives, reference adaptations and costs](UI_CONTACT_SHEET_2026-11-03.md) and [real-flow evidence](UI_CONTACT_SHEET_VALIDATION_2026-11-03.md). This supersedes the prior layout, not the synchronization architecture or quality thresholds. Visual acceptance and workflow-speed benefit remain unvalidated.
+
+## Density follow-up
+
+Ray requested larger footage and less top/side whitespace. Remove the height-derived grid width cap, merge desktop title/tools, and compact the shared transport. Retain original aspect ratios and allow scrolling in short windows. Explicit evidence/selection navigation also scrolls to the target. The same 1440 × 1000 sample now has approximately twice the actual nine-up source area; this is a measured layout improvement, not a claim about creator speed. See [measurements, screenshots and limits](UI_DENSITY_2026-11-03.md).
