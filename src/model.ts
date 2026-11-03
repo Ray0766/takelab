@@ -1,0 +1,281 @@
+export type Language = "en" | "zh";
+export type Verdict = "unreviewed" | "shortlisted" | "rejected" | "winner";
+export type MarkerKind = "issue" | "good" | "note";
+export interface Marker {
+  id: string;
+  time: number;
+  kind: MarkerKind;
+  text: string;
+}
+export interface Reference {
+  id: string;
+  name: string;
+  type: string;
+}
+export interface Take {
+  id: string;
+  shotId: string;
+  name: string;
+  size: number;
+  lastModified: number;
+  type: string;
+  duration: number;
+  width: number;
+  height: number;
+  offset: number;
+  verdict: Verdict;
+  model: string;
+  prompt: string;
+  negativePrompt: string;
+  seed: string;
+  settings: string;
+  cost: number | null;
+  markers: Marker[];
+  references: Reference[];
+  demo?: string;
+}
+export interface Shot {
+  id: string;
+  name: string;
+}
+export interface Project {
+  schemaVersion: 1;
+  id: string;
+  name: string;
+  createdAt: string;
+  updatedAt: string;
+  fps: number;
+  shots: Shot[];
+  takes: Take[];
+}
+export const uid = () => crypto.randomUUID();
+export const createProject = (name = "Untitled project"): Project => ({
+  schemaVersion: 1,
+  id: uid(),
+  name,
+  createdAt: new Date().toISOString(),
+  updatedAt: new Date().toISOString(),
+  fps: 24,
+  shots: [{ id: uid(), name: "Shot 01" }],
+  takes: [],
+});
+export function createTake(
+  file: File,
+  shotId: string,
+  metadata: { duration: number; width: number; height: number },
+): Take {
+  return {
+    id: uid(),
+    shotId,
+    name: file.name,
+    size: file.size,
+    lastModified: file.lastModified,
+    type: file.type || "video/mp4",
+    ...metadata,
+    offset: 0,
+    verdict: "unreviewed",
+    model: "",
+    prompt: "",
+    negativePrompt: "",
+    seed: "",
+    settings: "",
+    cost: null,
+    markers: [],
+    references: [],
+  };
+}
+export function setVerdict(
+  project: Project,
+  id: string,
+  verdict: Verdict,
+): Project {
+  const target = project.takes.find((t) => t.id === id);
+  return {
+    ...project,
+    takes: project.takes.map((t) =>
+      t.id === id
+        ? { ...t, verdict }
+        : verdict === "winner" &&
+            t.shotId === target?.shotId &&
+            t.verdict === "winner"
+          ? { ...t, verdict: "shortlisted" }
+          : t,
+    ),
+  };
+}
+export function moveTake(
+  project: Project,
+  id: string,
+  shotId: string,
+): Project {
+  return {
+    ...project,
+    takes: project.takes.map((t) =>
+      t.id === id
+        ? {
+            ...t,
+            shotId,
+            verdict:
+              t.verdict === "winner" &&
+              project.takes.some(
+                (x) => x.shotId === shotId && x.verdict === "winner",
+              )
+                ? "shortlisted"
+                : t.verdict,
+          }
+        : t,
+    ),
+  };
+}
+export const clamp = (value: number, min: number, max: number) =>
+  Math.min(max, Math.max(min, value));
+export const reviewDuration = (takes: Take[]) =>
+  Math.max(0, ...takes.map((t) => t.duration - t.offset));
+export function timecode(time: number, fps = 24): string {
+  const frame = Math.max(0, Math.round(time * fps));
+  return `${String(Math.floor(frame / fps / 60)).padStart(2, "0")}:${String(Math.floor(frame / fps) % 60).padStart(2, "0")}:${String(frame % fps).padStart(2, "0")}`;
+}
+export function formatBytes(bytes: number) {
+  return bytes >= 1024 ** 3
+    ? `${(bytes / 1024 ** 3).toFixed(1)} GB`
+    : `${(bytes / 1024 ** 2).toFixed(1)} MB`;
+}
+export function inferShotName(filename: string) {
+  const stem = filename.replace(/\.[^.]+$/, "");
+  return (
+    stem
+      .replace(
+        /(?:[_\- ](?:take|version|ver|v|t|seed)[_\- ]?\d+)(?:[_\- ].*)?$/i,
+        "",
+      )
+      .trim() || stem
+  );
+}
+export function blindOrder(takes: Take[], seed: number) {
+  const hash = (id: string) => {
+    let n = seed;
+    for (const c of id) n = Math.imul(n ^ c.charCodeAt(0), 16777619);
+    return n >>> 0;
+  };
+  return [...takes].sort((a, b) => hash(a.id) - hash(b.id));
+}
+
+// Project files are untrusted. Rebuild a bounded, whitelisted object at this boundary.
+export function parseProject(value: unknown): Project {
+  const fail = (): never => {
+    throw new Error(
+      "Invalid or unsupported TakeLab project (schema version 1 required).",
+    );
+  };
+  const obj = (v: unknown): Record<string, unknown> =>
+    v && typeof v === "object" && !Array.isArray(v)
+      ? (v as Record<string, unknown>)
+      : fail();
+  const str = (v: unknown, max = 20000): string =>
+    typeof v === "string" && v.length <= max ? v : fail();
+  const id = (v: unknown) => {
+    const s = str(v, 100);
+    return /^[\w-]+$/.test(s) ? s : fail();
+  };
+  const num = (v: unknown, max = 1e12) =>
+    typeof v === "number" && Number.isFinite(v) && v >= 0 && v <= max
+      ? v
+      : fail();
+  const arr = (v: unknown, max: number): unknown[] =>
+    Array.isArray(v) && v.length <= max ? v : fail();
+  const p = obj(value);
+  if (p.schemaVersion !== 1) fail();
+  const ids = new Set<string>();
+  const unique = (v: unknown) => {
+    const s = id(v);
+    if (ids.has(s)) fail();
+    ids.add(s);
+    return s;
+  };
+  const shots = arr(p.shots, 1000).map((v) => {
+    const s = obj(v);
+    return { id: unique(s.id), name: str(s.name, 200) };
+  });
+  if (!shots.length) fail();
+  const takes = arr(p.takes, 3000).map((v) => {
+    const t = obj(v);
+    const shotId = id(t.shotId);
+    if (!shots.some((s) => s.id === shotId)) fail();
+    const verdict = str(t.verdict) as Verdict;
+    if (!["unreviewed", "shortlisted", "rejected", "winner"].includes(verdict))
+      fail();
+    const duration = num(t.duration, 86400);
+    const offset = num(t.offset, duration);
+    if (duration <= 0 || offset >= duration) fail();
+    const take: Take = {
+      id: unique(t.id),
+      shotId,
+      name: str(t.name, 500),
+      size: num(t.size),
+      lastModified: num(t.lastModified, 1e15),
+      type: str(t.type, 100),
+      duration,
+      width: num(t.width, 32768),
+      height: num(t.height, 32768),
+      offset,
+      verdict,
+      model: str(t.model, 200),
+      prompt: str(t.prompt),
+      negativePrompt: str(t.negativePrompt),
+      seed: str(t.seed, 500),
+      settings: str(t.settings),
+      cost: t.cost === null ? null : num(t.cost, 1e9),
+      markers: arr(t.markers, 2000).map((v) => {
+        const m = obj(v);
+        const kind = str(m.kind) as MarkerKind;
+        if (!["issue", "good", "note"].includes(kind)) fail();
+        return {
+          id: unique(m.id),
+          time: num(m.time, duration),
+          kind,
+          text: str(m.text, 2000),
+        };
+      }),
+      references: arr(t.references, 30).map((v) => {
+        const r = obj(v);
+        const type = str(r.type, 100);
+        if (
+          !["image/png", "image/jpeg", "image/webp", "image/gif"].includes(type)
+        )
+          fail();
+        return { id: unique(r.id), name: str(r.name, 500), type };
+      }),
+    };
+    if (
+      !Number.isInteger(take.width) ||
+      !Number.isInteger(take.height) ||
+      take.width <= 0 ||
+      take.height <= 0
+    )
+      fail();
+    if (t.demo !== undefined) {
+      const demo = str(t.demo, 100);
+      if (!/^orbit-0[1-9]\.mp4$/.test(demo)) fail();
+      take.demo = demo;
+    }
+    return take;
+  });
+  for (const shot of shots)
+    if (
+      takes.filter((t) => t.shotId === shot.id && t.verdict === "winner")
+        .length > 1
+    )
+      fail();
+  const fps = num(p.fps, 60);
+  if (![12, 24, 25, 30, 50, 60].includes(fps)) fail();
+  return {
+    schemaVersion: 1,
+    id: id(p.id),
+    name: str(p.name, 200),
+    createdAt: str(p.createdAt, 100),
+    updatedAt: str(p.updatedAt, 100),
+    fps,
+    shots,
+    takes,
+  };
+}

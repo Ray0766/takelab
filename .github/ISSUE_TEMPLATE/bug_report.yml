@@ -1,0 +1,29 @@
+name: Bug report
+description: Report a reproducible problem in TakeLab.
+body:
+  - type: textarea
+    id: behavior
+    attributes:
+      label: What happened?
+      description: Describe actual behavior and what you expected.
+    validations:
+      required: true
+  - type: textarea
+    id: reproduce
+    attributes:
+      label: Steps to reproduce
+      description: Use the included demo or a small synthetic/public sample. Never attach private client footage, prompts or credentials.
+    validations:
+      required: true
+  - type: input
+    id: environment
+    attributes:
+      label: Environment
+      placeholder: TakeLab version, browser/version, OS, GPU if relevant
+    validations:
+      required: true
+  - type: textarea
+    id: media
+    attributes:
+      label: Media details
+      description: Container, codec, resolution, frame rate, duration and number of visible takes. Include console errors if available.

@@ -1,0 +1,15 @@
+name: Workflow improvement
+description: Describe a concrete selection workflow that TakeLab could improve.
+body:
+  - type: textarea
+    id: workflow
+    attributes:
+      label: What are you trying to do?
+      description: Describe the current workflow and where you lose time or information.
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed behavior
+      description: A small before/after example is more useful than a feature name.
