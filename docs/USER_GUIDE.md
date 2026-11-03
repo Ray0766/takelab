@@ -22,6 +22,10 @@ Each take starts unreviewed. Shortlist, reject and winner buttons toggle their v
 
 Press M to pause and write a marker. Choose Issue, Good moment or Note, then save. Ctrl/⌘ + Enter also saves it. Markers appear on the selected take's timeline and in its inspector. Use the timestamp to seek back or the × button to remove a marker.
 
+Open **Decision** after choosing a winner. Write why it was chosen and check supporting moments from any candidate in the shot, including rejected takes. A timestamp reveals that candidate even if filtered out and seeks to its source-relative observation. **Open winner record** returns to the chosen take's recipe. Reports and ZIPs retain the winner, reason, evidence IDs and generation records together. Replacing the winner clears the old reason; removing/moving evidence unlinks it. The record is editable and is not an immutable approval history.
+
+选定后打开 **选片依据**，填写理由并勾选支持它的时间点。可以引用淘汰版本的穿帮，或成片的亮点；缺少理由或证据会显示“依据尚未完整”。盲选期间隐藏这份文字记录，避免先前写入的来源信息影响判断。淘汰只改变状态标签，不会调暗素材画面。
+
 ## Keep the recipe / 留下制作方法
 
 Prompt, model/source, seed, negative prompt, settings and cost are optional. Unknown costs remain blank rather than becoming zero; all recorded costs are interpreted as USD. Reference images are stored locally and included in project backups even if source-video inclusion is off. Preview a reference by clicking its thumbnail.
@@ -34,7 +38,7 @@ Prompt, model/source, seed, negative prompt, settings and cost are optional. Unk
 
 The project menu can open a ZIP, load the demo or create a new project. These replace the active workspace after confirmation when it contains takes. Export first if you need to keep it. Full backup restore replaces records and blobs in one IndexedDB transaction; a failed transaction keeps the old workspace intact.
 
-只导出记录的 ZIP 不包含视频，恢复后卡片会显示“重新关联视频”。选择原视频即可保留评选、提示词与标记；若文件名或时长不同会再次提示，超过新视频时长的标记将被移除。
+只导出记录的 ZIP 不包含视频，恢复后卡片会显示“重新关联视频”。选择原视频即可保留评选、提示词、标记与依据。名称、大小、时长或分辨率不符会拒绝关联，请将不同素材作为新版本导入。此检查不是内容哈希，不能识别所有同名、同大小的内容替换。
 
 ## Troubleshooting / 故障处理
 

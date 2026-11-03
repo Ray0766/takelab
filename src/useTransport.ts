@@ -27,13 +27,21 @@ export function useTransport(duration: number, fps: number) {
         const target = clamp(at + offset, 0, Math.max(0, length - 0.001));
         if (video.readyState < 1) continue;
         video.playbackRate = speed;
-        if (force || Math.abs(video.currentTime - target) > 0.1) {
+        if (
+          (force && Math.abs(video.currentTime - target) > 0.001) ||
+          Math.abs(video.currentTime - target) > 0.1
+        ) {
           if (force || !video.seeking) video.currentTime = target;
         }
         const shouldPlay = play && at + offset < length;
         if (shouldPlay && video.paused && !video.seeking)
-          void video.play().catch(() => {
-            setPlaying(false);
+          void video.play().catch((error: unknown) => {
+            // Seeking/pausing can cancel an earlier play request normally.
+            if (
+              active.current &&
+              !(error instanceof DOMException && error.name === "AbortError")
+            )
+              setPlaying(false);
           });
         if (!shouldPlay && !video.paused) video.pause();
       }
@@ -78,7 +86,6 @@ export function useTransport(duration: number, fps: number) {
       return;
     }
     let frame = 0;
-    let previous = performance.now();
     let lastUI = 0;
     const tick = (now: number) => {
       // Do not let a stalled decoder or a background tab race past unseen frames.
@@ -88,11 +95,22 @@ export function useTransport(duration: number, fps: number) {
           !p.video.error &&
           (p.video.readyState < 3 || p.video.seeking),
       );
-      const delta = Math.min((now - previous) / 1000, 0.1);
-      previous = now;
-      if (!stalled) current.current += delta * rate;
+      // Follow the longest available source's actual media clock. A wall clock
+      // can outrun audio startup at 2x and repeatedly seek every decoder.
+      const leader = [...players.current.values()]
+        .filter((p) => !p.video.error && p.video.readyState >= 2)
+        .sort((a, b) => b.duration - b.offset - (a.duration - a.offset))[0];
+      if (!stalled && leader && !leader.video.paused)
+        current.current = clamp(
+          leader.video.currentTime - leader.offset,
+          0,
+          durationRef.current,
+        );
+      if (!stalled && leader?.video.ended)
+        current.current = durationRef.current;
       if (current.current >= durationRef.current) {
         current.current = loop ? 0 : durationRef.current;
+        setTime(current.current);
         if (!loop) setPlaying(false);
         sync(current.current, loop, rate, true);
       } else sync(current.current, !stalled, rate);
@@ -143,7 +161,11 @@ export function useTransport(duration: number, fps: number) {
     toggle,
     step,
     register,
-    pause: () => setPlaying(false),
+    pause: () => {
+      active.current = false;
+      for (const p of players.current.values()) p.video.pause();
+      setPlaying(false);
+    },
   };
 }
 export type Transport = ReturnType<typeof useTransport>;

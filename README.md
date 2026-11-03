@@ -29,7 +29,7 @@ Open [localhost:4173](http://127.0.0.1:4173/), then choose **Or explore a 9-take
 2. Press **Space** to compare; **← / →** step through the review timebase.
 3. **X** rejects a take, **S** shortlists it, **W** selects the shot's winner.
 4. Press **M** to leave a note at the current source time.
-5. Reveal the generation record and export a comparison or project backup.
+5. Open **Decision**, write a reason and link supporting markers, including flaws in rejected candidates. Reveal the generation record and export the result.
 
 ## What works
 
@@ -40,6 +40,7 @@ Open [localhost:4173](http://127.0.0.1:4173/), then choose **Or explore a 9-take
 | Review            | One winner per shot, shortlist, rejection, hide rejected, filename/model search, keyboard shortcuts                          |
 | Blind selection   | Shuffles take order; hides filenames, model, prompt, references, seed and cost until revealed                                |
 | Annotations       | Timestamped issue, good-moment and note markers; jump back to a marker; delete it                                            |
+| Decision evidence | Winner + rationale + explicit cross-candidate source-time evidence, linked to generation records with stable IDs in exports  |
 | Generation record | Prompt, negative prompt, model/source, reference images, seed, freeform settings and manual USD cost                         |
 | Save              | Source blobs and project metadata in IndexedDB, automatically saved on this browser and origin                               |
 | Export            | Portable project ZIP, Markdown production record, silent side-by-side comparison video                                       |
@@ -49,6 +50,7 @@ Open [localhost:4173](http://127.0.0.1:4173/), then choose **Or explore a 9-take
 
 - **Project ZIP** contains `project.json`, `record.md`, reference images, and optionally source videos. The uncompressed payload is limited to **512 MB** to bound browser memory. Larger projects can export records/references and keep original videos separately. ZIP restoration replaces the active project after confirmation.
 - **Production record** is a readable Markdown report with all shots, verdicts, prompts, settings, costs and source-relative markers. Review FPS and offsets are included.
+- The decision section links each chosen take to its reason, supporting moments and source records. Empty reasons/evidence are marked incomplete. This is a traceable workflow, not a claim that it improves decision speed or quality; see [decisions](docs/DECISIONS.md) and [measured limits](docs/VALIDATION.md).
 - **Comparison video** records the current page from its aligned start, in real time, at 1280 pixels wide and at most 30 capture fps. Up to nine takes, maximum 120 seconds, no audio. It prefers VP9/VP8 WebM and falls back to a supported MP4 recorder. Keep the tab visible; hiding it cancels the recording. Review layouts with fewer takes reduce decoding load. Blind comparisons use anonymous labels.
 
 Project and record export are disabled in blind mode until identities are revealed. Watermarks already inside a source frame cannot be hidden by TakeLab.
@@ -71,6 +73,8 @@ npx playwright install chromium
 npm run test:e2e              # Real playback, files, persistence and exports
 npm run format:check
 ```
+
+Optional mixed-FPS 1080p benchmark (requires FFmpeg): `node scripts/generate-sync-fixtures.mjs`, then `npx playwright test tests/e2e/sync.spec.ts`. It records media clocks, presented-frame callbacks and dropped-frame counts. Without generated fixtures this host benchmark is skipped; the normal workflow suite still checks bundled video playback.
 
 On Linux, install the browser's OS dependencies with `npx playwright install --with-deps chromium`. Browser tests use an isolated profile and the included synthetic clips. A retained HTML report is written to `playwright-report/`.
 

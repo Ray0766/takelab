@@ -30,11 +30,15 @@ Only one editing tab is supported. There is no multi-tab conflict resolution or 
 
 ## Review playback
 
-A `requestAnimationFrame` clock drives the shared review position. The registered players have a duration and start offset. Source time is `min(review time + offset, source duration)`. Drift greater than 100 ms triggers a correction. A decoder seeking/buffering pauses clock advancement and other players; backgrounding the page pauses playback. Shorter sources hold their end frame.
+A `requestAnimationFrame` loop follows the longest available player's actual media clock. The previous independent wall clock could advance during audio startup and repeatedly seek decoders at 2×. Registered players have a duration and start offset. Source time is `min(review time + offset, source duration)`. Drift greater than 100 ms triggers a correction. A decoder seeking/buffering pauses other players; backgrounding pauses playback. Shorter sources hold their end frame. Pause acts immediately and expected AbortErrors from interrupted play requests do not cancel a later playback session.
 
 The selected review FPS defines keyboard step duration and display timecode; no frame-index parsing or transcoding is performed. This trades professional frame precision for a lightweight, dependency-free first-use experience. Only 1/4/9 visible players are mounted; export temporarily releases them and creates its own bounded player set. Large/unsupported media can still exhaust browser decoder resources.
 
 ## Project archive v1
+
+An optional `Shot.decision` binds one winner ID to a reason and `{ takeId, markerId }` evidence references. Evidence may belong to rejected candidates in the same shot. The parser rejects dangling, duplicate and cross-shot references. Mutations clear a replaced winner's rationale and remove invalid evidence references. These are editable current records, not an immutable audit history. Older schema-1 projects remain readable; older app versions can discard decision fields on re-export.
+
+Reports include stable project/shot/take/marker IDs and links from decision evidence to each source's generation record. Non-blind comparison videos show take IDs that match the report; blind recordings remain anonymous. Relinking checks name/size/duration/dimensions and rejects a mismatch rather than transferring old evidence to a different take. This is not a content hash.
 
 ```text
 example.takelab.zip

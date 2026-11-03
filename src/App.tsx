@@ -52,6 +52,7 @@ import {
   formatBytes,
   inferShotName,
   moveTake,
+  reconcileDecisions,
   reviewDuration,
   setVerdict,
   timecode,
@@ -73,6 +74,7 @@ import { useTransport } from "./useTransport";
 import { Modal } from "./components/Modal";
 import { TakeCard } from "./components/TakeCard";
 import { ReferenceImage } from "./components/ReferenceImage";
+import { DecisionPanel } from "./components/DecisionPanel";
 
 type Dialog = "import" | "export" | "help" | "project" | null;
 type Notice = { text: string; error?: boolean } | null;
@@ -111,9 +113,9 @@ export default function App() {
   const [filter, setFilter] = useState("all");
   const [search, setSearch] = useState("");
   const [hideRejected, setHideRejected] = useState(false);
-  const [inspectorTab, setInspectorTab] = useState<"record" | "markers">(
-    "record",
-  );
+  const [inspectorTab, setInspectorTab] = useState<
+    "record" | "markers" | "decision"
+  >("record");
   const [markerText, setMarkerText] = useState("");
   const [markerKind, setMarkerKind] = useState<MarkerKind>("issue");
   const [autoGroup, setAutoGroup] = useState(false);
@@ -126,6 +128,10 @@ export default function App() {
   const referenceInput = useRef<HTMLInputElement>(null);
   const markerInput = useRef<HTMLTextAreaElement>(null);
   const relinkId = useRef("");
+  const [revisitTarget, setRevisitTarget] = useState<{
+    id: string;
+    time: number;
+  } | null>(null);
   const abort = useRef<AbortController | null>(null);
   const dragDepth = useRef(0);
   const saveQueue = useRef(Promise.resolve());
@@ -226,6 +232,7 @@ export default function App() {
     [filtered, page, grid],
   );
   const duration = reviewDuration(visible);
+  const layout = visible.length === 1 ? 1 : visible.length === 2 ? 4 : grid;
   const transport = useTransport(duration, project?.fps || 24);
   const selected = project?.takes.find((take) => take.id === selectedId);
   const labelFor = (take: Take) =>
@@ -245,10 +252,38 @@ export default function App() {
   useEffect(() => {
     setMarkerText("");
   }, [selectedId]);
+  useEffect(() => {
+    if (!revisitTarget) return;
+    const index = filtered.findIndex((take) => take.id === revisitTarget.id);
+    if (index < 0) return;
+    const targetPage = Math.floor(index / grid);
+    if (page !== targetPage) {
+      setPage(targetPage);
+      return;
+    }
+    setSelectedId(revisitTarget.id);
+    transport.pause();
+    transport.seek(revisitTarget.time);
+    setRevisitTarget(null);
+  }, [revisitTarget, filtered, page, grid]);
+  const revealTake = (take: Take, sourceTime = take.offset) => {
+    setFilter("all");
+    setHideRejected(false);
+    setSearch("");
+    setRevisitTarget({
+      id: take.id,
+      time: Math.max(0, sourceTime - take.offset),
+    });
+  };
 
   const update = (change: (p: Project) => Project) =>
     setProject((p) =>
-      p ? { ...change(p), updatedAt: new Date().toISOString() } : p,
+      p
+        ? {
+            ...reconcileDecisions(change(p)),
+            updatedAt: new Date().toISOString(),
+          }
+        : p,
     );
   const patchTake = (id: string, patch: Partial<Take>) =>
     update((p) => ({
@@ -268,7 +303,10 @@ export default function App() {
     setBusy(t("Removing from project…", "正在从项目中移除…"));
     try {
       await saveQueue.current;
-      const value = { ...next, updatedAt: new Date().toISOString() };
+      const value = {
+        ...reconcileDecisions(next),
+        updatedAt: new Date().toISOString(),
+      };
       await removeProjectMedia(value, ids);
       setProject(value);
     } catch (e) {
@@ -463,17 +501,17 @@ export default function App() {
       const metadata = await inspectVideo(file);
       if (
         Math.abs(metadata.duration - take.duration) > 0.1 ||
-        file.name !== take.name
+        file.name !== take.name ||
+        file.size !== take.size ||
+        metadata.width !== take.width ||
+        metadata.height !== take.height
       ) {
-        if (
-          !confirm(
-            t(
-              "This file differs from the original. Replace it and preserve notes that are within its duration?",
-              "此文件与原素材不同。是否替换，并保留时长范围内的标记？",
-            ),
-          )
-        )
-          return;
+        throw new Error(
+          t(
+            "This file does not match the original name, size, duration or dimensions. Import it as a new take to keep existing evidence attached to its original source.",
+            "此文件的名称、大小、时长或分辨率与原素材不符。请作为新版本导入，避免已有证据关联到不同素材。",
+          ),
+        );
       }
       await writeMedia(take.id, file);
       patchTake(take.id, {
@@ -576,7 +614,7 @@ export default function App() {
       const result = await recordComparison(
         visible,
         visible.map((take) =>
-          blind ? labelFor(take) : `${labelFor(take)} / ${take.name}`,
+          blind ? labelFor(take) : `${take.id} / ${take.name}`,
         ),
         project.fps,
         controller.signal,
@@ -1101,11 +1139,12 @@ export default function App() {
           <div className="grid-scroller">
             {visible.length ? (
               <div
-                className={`take-grid grid-${grid}`}
+                className={`take-grid grid-${layout}`}
                 style={
                   {
                     "--rows": Math.ceil(
-                      visible.length / (grid === 9 ? 3 : grid === 4 ? 2 : 1),
+                      visible.length /
+                        (layout === 9 ? 3 : layout === 4 ? 2 : 1),
                     ),
                   } as CSSProperties
                 }
@@ -1434,6 +1473,12 @@ export default function App() {
               </div>
               <div className="inspector-tabs">
                 <button
+                  className={inspectorTab === "decision" ? "active" : ""}
+                  onClick={() => setInspectorTab("decision")}
+                >
+                  {t("Decision", "选片依据")}
+                </button>
+                <button
                   className={inspectorTab === "record" ? "active" : ""}
                   onClick={() => setInspectorTab("record")}
                 >
@@ -1448,7 +1493,28 @@ export default function App() {
                 </button>
               </div>
               <div className="inspector-content">
-                {inspectorTab === "record" ? (
+                {inspectorTab === "decision" && shot ? (
+                  <DecisionPanel
+                    shot={shot}
+                    takes={shotTakes}
+                    fps={project.fps}
+                    blind={blind}
+                    t={t}
+                    change={(decision) =>
+                      update((p) => ({
+                        ...p,
+                        shots: p.shots.map((s) =>
+                          s.id === shot.id ? { ...s, decision } : s,
+                        ),
+                      }))
+                    }
+                    revisit={(take, marker) => revealTake(take, marker.time)}
+                    record={(take) => {
+                      revealTake(take);
+                      setInspectorTab("record");
+                    }}
+                  />
+                ) : inspectorTab === "record" ? (
                   blind ? (
                     <div className="blind-inspector">
                       <EyeOff size={28} />

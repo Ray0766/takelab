@@ -37,6 +37,47 @@ export interface Take {
 export interface Shot {
   id: string;
   name: string;
+  decision?: Decision;
+}
+export interface EvidenceRef {
+  takeId: string;
+  markerId: string;
+}
+export interface Decision {
+  takeId: string;
+  reason: string;
+  evidence: EvidenceRef[];
+}
+// A decision belongs to one winner. Never carry its rationale to another winner.
+// Evidence can reference other candidates, but only inside the same shot.
+export function reconcileDecisions(project: Project): Project {
+  return {
+    ...project,
+    shots: project.shots.map((shot) => {
+      const winner = project.takes.find(
+        (t) => t.shotId === shot.id && t.verdict === "winner",
+      );
+      const { decision, ...base } = shot;
+      if (!winner) return base;
+      return {
+        ...base,
+        decision:
+          decision?.takeId === winner.id
+            ? {
+                ...decision,
+                evidence: decision.evidence.filter((ref) =>
+                  project.takes.some(
+                    (t) =>
+                      t.shotId === shot.id &&
+                      t.id === ref.takeId &&
+                      t.markers.some((m) => m.id === ref.markerId),
+                  ),
+                ),
+              }
+            : { takeId: winner.id, reason: "", evidence: [] },
+      };
+    }),
+  };
 }
 export interface Project {
   schemaVersion: 1;
@@ -90,7 +131,7 @@ export function setVerdict(
   verdict: Verdict,
 ): Project {
   const target = project.takes.find((t) => t.id === id);
-  return {
+  return reconcileDecisions({
     ...project,
     takes: project.takes.map((t) =>
       t.id === id
@@ -101,14 +142,14 @@ export function setVerdict(
           ? { ...t, verdict: "shortlisted" }
           : t,
     ),
-  };
+  });
 }
 export function moveTake(
   project: Project,
   id: string,
   shotId: string,
 ): Project {
-  return {
+  return reconcileDecisions({
     ...project,
     takes: project.takes.map((t) =>
       t.id === id
@@ -125,7 +166,7 @@ export function moveTake(
           }
         : t,
     ),
-  };
+  });
 }
 export const clamp = (value: number, min: number, max: number) =>
   Math.min(max, Math.max(min, value));
@@ -192,7 +233,8 @@ export function parseProject(value: unknown): Project {
     ids.add(s);
     return s;
   };
-  const shots = arr(p.shots, 1000).map((v) => {
+  const rawShots = arr(p.shots, 1000);
+  const shots: Shot[] = rawShots.map((v) => {
     const s = obj(v);
     return { id: unique(s.id), name: str(s.name, 200) };
   });
@@ -266,6 +308,43 @@ export function parseProject(value: unknown): Project {
         .length > 1
     )
       fail();
+  rawShots.forEach((raw, index) => {
+    const d = obj(raw).decision;
+    if (d === undefined) return; // Existing schema-1 archives remain readable.
+    const value = obj(d);
+    const takeId = id(value.takeId);
+    const shot = shots[index];
+    if (
+      !takes.some(
+        (t) =>
+          t.id === takeId && t.shotId === shot.id && t.verdict === "winner",
+      )
+    )
+      fail();
+    const seen = new Set<string>();
+    shot.decision = {
+      takeId,
+      reason: str(value.reason, 4000),
+      evidence: arr(value.evidence, 2000).map((v) => {
+        const ref = obj(v);
+        const takeId = id(ref.takeId);
+        const markerId = id(ref.markerId);
+        const key = `${takeId}/${markerId}`;
+        if (
+          seen.has(key) ||
+          !takes.some(
+            (t) =>
+              t.id === takeId &&
+              t.shotId === shot.id &&
+              t.markers.some((m) => m.id === markerId),
+          )
+        )
+          fail();
+        seen.add(key);
+        return { takeId, markerId };
+      }),
+    };
+  });
   const fps = num(p.fps, 60);
   if (![12, 24, 25, 30, 50, 60].includes(fps)) fail();
   return {

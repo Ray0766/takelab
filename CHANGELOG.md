@@ -1,5 +1,14 @@
 # Changelog
 
+## Unreleased — traceable decisions and playback reliability
+
+- Bind each winner to a written reason and explicit timestamp evidence from any candidate in its shot; retain stable source/marker IDs in reports and backups.
+- Revisit filtered-out evidence, open the winner's generation record, and show incomplete decisions. Clear stale links when winners or sources change.
+- Reject mismatched relink files instead of attaching old observations to different footage.
+- Follow the actual media clock to avoid repeated decoder seeks during 2× startup; pause immediately and ignore expected interrupted-play errors.
+- Preserve rejected footage brightness and use full-width equal panes for two candidates.
+- Add mixed-FPS 1080p measurements, portable decision examples, official technical/design references and explicit verification limits.
+
 ## 0.1.0 — initial implementation
 
 - Local multi-video import, filename-based shot grouping and source relinking.

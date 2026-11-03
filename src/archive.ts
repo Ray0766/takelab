@@ -18,18 +18,60 @@ export function reportMarkdown(p: Project) {
     `# ${escape(p.name)}`,
     "",
     `TakeLab production record · ${escape(p.updatedAt)}`,
+    `Project ID: ${escape(p.id)}`,
     "",
     `Review timebase: ${p.fps} fps. Marker times refer to the original source, before the review offset. Costs are entered manually in USD.`,
     "",
   ];
   for (const shot of p.shots) {
-    lines.push(`## ${escape(shot.name)}`, "");
+    lines.push(
+      `## ${escape(shot.name)}`,
+      "",
+      `Shot ID: ${escape(shot.id)}`,
+      "",
+      "### Selection decision",
+      "",
+    );
+    const winner = p.takes.find(
+      (t) => t.shotId === shot.id && t.verdict === "winner",
+    );
+    const decision = shot.decision;
+    if (!winner) lines.push("No winner selected.", "");
+    else {
+      lines.push(
+        `- Selected: [${escape(winner.name)}](#take-${winner.id})`,
+        `- Take ID: ${winner.id}`,
+        `- Reason: ${escape(decision?.reason.trim() || "Not recorded")}`,
+        `- Evidence: ${decision?.evidence.length || 0} linked moments`,
+        "",
+      );
+      if (!decision?.reason.trim() || !decision.evidence.length)
+        lines.push(
+          "Decision incomplete: reason or supporting evidence is missing.",
+          "",
+        );
+      for (const ref of decision?.evidence || []) {
+        const take = p.takes.find((t) => t.id === ref.takeId);
+        const marker = take?.markers.find((m) => m.id === ref.markerId);
+        if (!take || !marker) continue;
+        lines.push(
+          `- [${escape(take.name)}](#take-${take.id}) · source ${marker.time.toFixed(3)} s (${timecode(marker.time, p.fps)}) · review ${marker.time >= take.offset ? `${(marker.time - take.offset).toFixed(3)} s` : "before offset"} · [${marker.kind}] ${escape(marker.text)}`,
+          `  - Evidence ID: ${take.id}/${marker.id}`,
+          `  - [Generation record](#take-${take.id})`,
+          "",
+        );
+      }
+    }
     for (const [i, t] of p.takes
       .filter((t) => t.shotId === shot.id)
       .entries()) {
       lines.push(
+        `<a id="take-${t.id}"></a>`,
         `### ${i + 1}. ${escape(t.name)} — ${t.verdict}`,
         "",
+        `- Take ID: ${t.id}`,
+        `- Archive source: media/${t.id} (present only when videos are included)`,
+        `- Original filename: ${escape(t.name)}; ${t.size} bytes`,
         `- Source: ${t.width} × ${t.height}, ${t.duration.toFixed(3)} s`,
         `- Review offset: ${t.offset.toFixed(3)} s`,
         `- Model: ${escape(t.model || "Not recorded")}`,
@@ -57,7 +99,7 @@ export function reportMarkdown(p: Project) {
               .sort((a, b) => a.time - b.time)
               .map(
                 (m) =>
-                  `- ${timecode(m.time, p.fps)} (${m.time.toFixed(3)} s) [${m.kind}] ${escape(m.text)}`,
+                  `- ${timecode(m.time, p.fps)} (${m.time.toFixed(3)} s) [${m.kind}] ${escape(m.text)} · Marker ID: ${m.id}`,
               )
           : ["No markers."]),
         "",

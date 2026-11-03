@@ -4,6 +4,7 @@ import {
   createProject,
   inferShotName,
   moveTake,
+  reconcileDecisions,
   parseProject,
   reviewDuration,
   setVerdict,
@@ -108,6 +109,75 @@ describe("review calculations", () => {
   });
 });
 describe("portable exports", () => {
+  it("round-trips cross-candidate evidence and preserves source times and IDs", async () => {
+    let p = createDemo();
+    p.takes[1].markers.push({
+      id: "fault",
+      time: 3.25,
+      kind: "issue",
+      text: "Ring breaks",
+    });
+    p.takes[1].offset = 0.5;
+    p = setVerdict(p, p.takes[0].id, "winner");
+    p.shots[0].decision!.reason = "Stable ring";
+    p.shots[0].decision!.evidence = [
+      { takeId: p.takes[1].id, markerId: "fault" },
+    ];
+    const restored = await importArchive(
+      new File(
+        [zipSync({ "project.json": strToU8(JSON.stringify(p)) })],
+        "record.zip",
+      ),
+    );
+    expect(restored.project).toEqual(p);
+    const report = reportMarkdown(restored.project);
+    expect(report).toContain("Reason: Stable ring");
+    expect(report).toContain("source 3.250 s");
+    expect(report).toContain("review 2.750 s");
+    expect(report).toContain(`Evidence ID: ${p.takes[1].id}/fault`);
+    expect(report).toContain(`(#take-${p.takes[1].id})`);
+    expect(report).toContain(p.takes[1].prompt);
+  });
+  it("clears stale decisions and unlinks removed or moved evidence", () => {
+    let p = createDemo();
+    p.takes[1].markers.push({
+      id: "fault",
+      time: 3,
+      kind: "issue",
+      text: "Fault",
+    });
+    p = setVerdict(p, p.takes[0].id, "winner");
+    p.shots[0].decision!.reason = "A reason for this winner only";
+    p.shots[0].decision!.evidence = [
+      { takeId: p.takes[1].id, markerId: "fault" },
+    ];
+    const moved = moveTake(p, p.takes[1].id, p.shots[1].id);
+    expect(moved.shots[0].decision!.evidence).toEqual([]);
+    const changed = setVerdict(p, p.takes[2].id, "winner");
+    expect(changed.shots[0].decision!.reason).toBe("");
+    p.takes[1].markers = [];
+    expect(reconcileDecisions(p).shots[0].decision!.evidence).toEqual([]);
+    expect(() => parseProject(p)).toThrow(); // Dangling imports are rejected.
+    expect(
+      setVerdict(p, p.takes[0].id, "unreviewed").shots[0].decision,
+    ).toBeUndefined();
+  });
+  it("rejects evidence from another shot and duplicate references", () => {
+    let p = createDemo();
+    p.takes[1].markers.push({
+      id: "fault",
+      time: 3,
+      kind: "issue",
+      text: "Fault",
+    });
+    p = setVerdict(p, p.takes[0].id, "winner");
+    const ref = { takeId: p.takes[1].id, markerId: "fault" };
+    p.shots[0].decision!.evidence = [ref, ref];
+    expect(() => parseProject(p)).toThrow();
+    p.shots[0].decision!.evidence = [ref];
+    p.takes[1].shotId = p.shots[1].id;
+    expect(() => parseProject(p)).toThrow();
+  });
   it("preserves prompts containing markdown code fences", () => {
     const p = createDemo();
     p.takes[0].prompt = "````\n<script>alert(1)</script>\n````";
