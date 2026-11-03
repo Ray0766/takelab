@@ -137,5 +137,5 @@ for index in range(9):
     manifest[filename] = destination.stat().st_size
     print(f"Generated {filename}: {manifest[filename]:,} bytes", flush=True)
     if index in (0, 3, 6):
-        subprocess.run(["ffmpeg", "-hide_banner", "-loglevel", "error", "-y", "-ss", "2.8", "-i", str(destination), "-frames:v", "1", "-vf", "scale=256:-1", str(OUT / f"preview-{index + 1}.webp")], check=True)
+        subprocess.run(["ffmpeg", "-hide_banner", "-loglevel", "error", "-y", "-ss", "2.8", "-i", str(destination), "-frames:v", "1", "-vf", "scale=640:-1", str(OUT / f"preview-{index + 1}.webp")], check=True)
 (ROOT / "src" / "demo-assets.json").write_text(json.dumps(manifest, indent=2) + "\n", encoding="utf-8")

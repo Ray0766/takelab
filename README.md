@@ -23,7 +23,7 @@ npm ci
 npm run dev
 ```
 
-Open [localhost:4173](http://127.0.0.1:4173/), then choose **Or explore a 9-take demo**. The nine included clips are original procedural artwork, take six seconds to review, and need no downloads beyond this repository. The interface supports English and Simplified Chinese.
+Open [localhost:4173](http://127.0.0.1:4173/), then choose **Open the sample project**. The nine included clips are original procedural artwork, take six seconds to review, and need no downloads beyond this repository. The interface supports English and Simplified Chinese.
 
 1. Drop a batch of videos into a shot.
 2. Press **Space** to compare; **← / →** step through the review timebase.
@@ -31,7 +31,7 @@ Open [localhost:4173](http://127.0.0.1:4173/), then choose **Or explore a 9-take
 4. Press **M** to leave a note at the current source time.
 5. Open **Decision**, write a reason and link supporting markers, including flaws in rejected candidates. Reveal the generation record and export the result.
 
-**Details** folds away the record panel for more comparison space. **Add marker** reopens it at the current source time. The [interface design notes](docs/UI_REDESIGN_2026-11-03.md) document the visual references, research rationale and untested assumptions.
+**Details** opens the record panel when needed. The selected-take shortcut opens its decision; **Add marker** focuses the note at the current source time. The [interface design notes](docs/UI_CONTACT_SHEET_2026-11-03.md) document the visual references, research rationale and untested assumptions.
 
 ## What works
 

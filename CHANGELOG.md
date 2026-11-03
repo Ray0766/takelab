@@ -2,7 +2,7 @@
 
 ## Unreleased — traceable decisions and playback reliability
 
-- Rework the interface around a light tool surface and neutral viewing area, with quieter shot navigation, larger previews and a collapsible record panel. Remove decorative project statistics and promotional UI copy.
+- Rebuild the interface as a contact sheet: horizontal shot directory, unboxed footage with letter captions, cobalt identity and locally bundled OFL display typography. Records start closed; the selected-take shortcut opens the decision and reveals its source at the current review moment.
 - Preserve player instances while details are hidden; reopen and focus the marker composer from playback controls. Keep previews legible in short windows.
 - Freeze the actual media clock and publish the final time on pause, fixing a readout that could lag by one nominal frame between UI updates.
 

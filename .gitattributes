@@ -3,6 +3,10 @@
 *.png binary
 *.webp binary
 *.webm binary
+*.woff2 binary
+# Preserve the upstream font license verbatim, including its line-end space.
+public/fonts/OFL.txt whitespace=-blank-at-eol
 # Preserve the verbatim production-record export, including its trailing lines.
 docs/evidence/record.md whitespace=-blank-at-eof
 docs/evidence/ui-20261103/record.md whitespace=-blank-at-eof
+docs/evidence/contact-sheet-20261103/record.md whitespace=-blank-at-eof

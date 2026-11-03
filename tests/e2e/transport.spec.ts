@@ -14,7 +14,7 @@ test("bundled demo seeks on a static host that returns full files without Range 
     });
   });
   await page.goto("/");
-  await page.getByRole("button", { name: "Or explore a 9-take demo" }).click();
+  await page.getByRole("button", { name: "Open the sample project" }).click();
   await expect(page.locator("video")).toHaveCount(9);
   await expect
     .poll(() =>
@@ -57,7 +57,7 @@ test("pausing between UI updates keeps displayed time, source and marker togethe
   page,
 }, info) => {
   await page.goto("/");
-  await page.getByRole("button", { name: "Or explore a 9-take demo" }).click();
+  await page.getByRole("button", { name: "Open the sample project" }).click();
   await page.getByRole("button", { name: "1 view", exact: true }).click();
   await expect
     .poll(() => page.locator("video").evaluate((v) => v.readyState))

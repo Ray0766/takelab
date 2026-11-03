@@ -1,5 +1,7 @@
 # Interface revision — 2026-11-03
 
+> Historical iteration: Ray rejected this layout. The current [contact-sheet revision](UI_CONTACT_SHEET_2026-11-03.md) supersedes its visual rules and composition. The reference observations below remain part of the research record.
+
 Ray's feedback: the overall interface felt like an AI-generated template. This revision changes the workspace hierarchy, not just its accent color. The task remains choosing between local video takes and retaining the reason, source-time observations and generation record.
 
 ## References actually reviewed

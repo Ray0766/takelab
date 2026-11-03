@@ -125,17 +125,7 @@ export function TakeCard({
             </button>
           </div>
         )}
-        <button
-          className="take-select"
-          aria-label={t(`Inspect ${label}`, `查看 ${label}`)}
-          aria-pressed={active}
-          onClick={(e) => {
-            e.stopPropagation();
-            inspect();
-          }}
-        >
-          <span className="take-letter">{label.split(" · ")[0]}</span>
-        </button>
+
         {take.verdict !== "unreviewed" && (
           <span className={`verdict-badge ${take.verdict}`}>
             {take.verdict === "winner" ? (
@@ -176,6 +166,17 @@ export function TakeCard({
         </div>
       </div>
       <div className="take-card-footer">
+        <button
+          className="take-select"
+          aria-label={t(`Inspect ${label}`, `查看 ${label}`)}
+          aria-pressed={active}
+          onClick={(e) => {
+            e.stopPropagation();
+            inspect();
+          }}
+        >
+          <span className="take-letter">{label.split(" · ")[0]}</span>
+        </button>
         <div className="take-caption">
           <span title={blind ? label : take.name}>
             {blind

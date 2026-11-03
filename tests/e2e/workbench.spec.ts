@@ -5,7 +5,7 @@ import fs from "node:fs/promises";
 const source = path.resolve("public/demo/orbit-01.mp4");
 async function demo(page: import("@playwright/test").Page) {
   await page.goto("/");
-  await page.getByRole("button", { name: "Or explore a 9-take demo" }).click();
+  await page.getByRole("button", { name: "Open the sample project" }).click();
   await expect(page.getByTestId("take-card")).toHaveCount(9);
   await expect
     .poll(() =>
@@ -96,6 +96,7 @@ test("import source, notes and reference; export and restore a portable project"
   await page.goto("/");
   await page.getByTestId("video-input").setInputFiles(source);
   await expect(page.getByTestId("take-card")).toHaveCount(1);
+  await page.getByRole("button", { name: "Details", exact: true }).click();
   await page.getByLabel("Prompt", { exact: true }).fill("Portable test prompt");
   await page.getByLabel("Cost (USD)", { exact: true }).fill("0.45");
   await page.getByTestId("reference-input").setInputFiles({
@@ -137,6 +138,7 @@ test("import source, notes and reference; export and restore a portable project"
     )
     .toBeGreaterThanOrEqual(2);
   await page.reload();
+  await page.getByRole("button", { name: "Details", exact: true }).click();
   await expect(page.getByLabel("Prompt", { exact: true })).toHaveValue(
     "Portable test prompt",
   );
@@ -255,6 +257,7 @@ test("source offsets preserve marker time and take removal persists", async ({
   page,
 }) => {
   await demo(page);
+  await page.getByRole("button", { name: "Details", exact: true }).click();
   await page.getByLabel("Start offset (seconds)").fill("2");
   await expect
     .poll(() =>
@@ -327,6 +330,7 @@ test("metadata-only backup can relink its missing video", async ({
   await page.goto("/");
   await page.getByTestId("video-input").setInputFiles(source);
   await expect(page.getByTestId("take-card")).toHaveCount(1);
+  await page.getByRole("button", { name: "Details", exact: true }).click();
   await page
     .getByLabel("Prompt", { exact: true })
     .fill("Keep this recipe when relinking.");

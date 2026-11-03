@@ -138,6 +138,7 @@ test("winner → cross-candidate evidence → generation record survives export,
     page.getByText("Source unavailable", { exact: true }),
   ).toHaveCount(0);
   await page.reload();
+  await page.getByRole("button", { name: "Details", exact: true }).click();
   await page.getByRole("button", { name: "Decision", exact: true }).click();
   await expect(page.getByLabel("Why this take?")).toHaveValue(
     project.shots[0].decision!.reason,

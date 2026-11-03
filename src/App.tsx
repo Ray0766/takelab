@@ -7,7 +7,6 @@ import {
   ChevronDown,
   ChevronLeft,
   ChevronRight,
-  Clapperboard,
   Copy,
   Download,
   Eye,
@@ -45,7 +44,6 @@ import {
   clamp,
   createProject,
   createTake,
-  formatBytes,
   inferShotName,
   moveTake,
   reconcileDecisions,
@@ -109,7 +107,7 @@ export default function App() {
   const [filter, setFilter] = useState("all");
   const [search, setSearch] = useState("");
   const [hideRejected, setHideRejected] = useState(false);
-  const [inspectorOpen, setInspectorOpen] = useState(true);
+  const [inspectorOpen, setInspectorOpen] = useState(false);
   const [inspectorTab, setInspectorTab] = useState<
     "record" | "markers" | "decision"
   >("record");
@@ -232,6 +230,7 @@ export default function App() {
   const layout = visible.length === 1 ? 1 : visible.length === 2 ? 4 : grid;
   const transport = useTransport(duration, project?.fps || 24);
   const selected = project?.takes.find((take) => take.id === selectedId);
+  const shotWinner = shotTakes.find((take) => take.verdict === "winner");
   const labelFor = (take: Take) =>
     `${String.fromCharCode(65 + (ordered.indexOf(take) % 26))}${ordered.indexOf(take) >= 26 ? Math.floor(ordered.indexOf(take) / 26) + 1 : ""} · ${t("Take", "版本")} ${String(ordered.indexOf(take) + 1).padStart(2, "0")}`;
   useEffect(() => {
@@ -783,10 +782,11 @@ export default function App() {
           }}
           aria-label="TakeLab project menu"
         >
-          <span className="brand-mark">
-            <Clapperboard size={22} strokeWidth={2.2} />
-          </span>
           <strong>TakeLab</strong>
+          <span className="brand-mark" aria-hidden="true">
+            <span />
+            <span />
+          </span>
         </a>
         <div className="project-heading">
           <span className="top-divider" />
@@ -845,7 +845,7 @@ export default function App() {
         className={`workbench ${inspectorOpen && selected ? "" : "inspector-closed"}`}
         inert={!!busy}
       >
-        <aside className="sidebar">
+        <aside className="shot-strip">
           <div className="sidebar-heading">
             <span>{t("Shots", "镜头")}</span>
             <span className="count">{project.shots.length}</span>
@@ -904,29 +904,10 @@ export default function App() {
               );
             })}
           </nav>
-          <button className="add-shot" onClick={() => setDialog("import")}>
-            <Plus size={15} />
-            {t("Add footage", "添加素材")}
+          <button className="sidebar-help" onClick={() => setDialog("help")}>
+            <Keyboard size={15} />
+            {t("Shortcuts & help", "快捷键与帮助")}
           </button>
-          <div className="sidebar-bottom">
-            <div className="local-note">
-              <HardDrive size={15} />
-              <span>
-                {t("Stored on this device", "保存在这台设备")}
-                <small>
-                  {formatBytes(
-                    project.takes.reduce((sum, take) => sum + take.size, 0),
-                  )}{" "}
-                  {t("of video", "视频素材")}
-                </small>
-              </span>
-            </div>
-            <button className="sidebar-help" onClick={() => setDialog("help")}>
-              <Keyboard size={15} />
-              {t("Shortcuts & help", "快捷键与帮助")}
-              <span>?</span>
-            </button>
-          </div>
         </aside>
 
         <main className="main-panel">
@@ -946,7 +927,6 @@ export default function App() {
                     }))
                   }
                 />
-                <span className="count">{shotTakes.length}</span>
                 {!shotTakes.length && project.shots.length > 1 && (
                   <button
                     className="icon-button"
@@ -964,6 +944,22 @@ export default function App() {
                 )}
               </div>
             </div>
+            {shotWinner && !blind && (
+              <button
+                className="selection-summary"
+                onClick={() => {
+                  revealTake(shotWinner, transport.time + shotWinner.offset);
+                  setInspectorOpen(true);
+                  setInspectorTab("decision");
+                }}
+              >
+                <Check size={16} />
+                <span>
+                  {t("Selected", "已选")} {labelFor(shotWinner).split(" · ")[0]}
+                </span>
+                <small>{t("Review decision", "查看选片依据")}</small>
+              </button>
+            )}
             <button
               className="button details-toggle"
               hidden={!selected}
@@ -1125,44 +1121,59 @@ export default function App() {
                 </button>
               </div>
             ) : (
-              <div className="empty-state">
-                <div className="empty-preview" aria-hidden="true">
-                  {[1, 4, 7].map((n) => (
-                    <img
-                      key={n}
-                      src={`${import.meta.env.BASE_URL}demo/preview-${n}.webp`}
-                      alt=""
-                    />
-                  ))}
+              <div className="empty-state welcome">
+                <div className="welcome-copy">
+                  <h2>
+                    {t(
+                      "Side by side.\nSee the difference.",
+                      "并排看。\n选一条。",
+                    )}
+                  </h2>
+                  <p>
+                    {t(
+                      "Bring every version of a shot into the same moment.\nKeep the take — and the reason you chose it.",
+                      "把同一镜头的不同版本，放在同一时刻。\n留下选中的那条，也留下选择的依据。",
+                    )}
+                  </p>
+                  <button
+                    className="button primary"
+                    onClick={() => setDialog("import")}
+                  >
+                    <Plus size={18} />
+                    {t("Import your first takes", "导入第一批视频")}
+                  </button>
+                  <small>
+                    {t(
+                      "Local files. No accounts. No uploads.",
+                      "本地处理，无需账号，无需上传。",
+                    )}
+                  </small>
                 </div>
-                <h2>{t("Compare a few takes.", "把几个版本，放在一起看。")}</h2>
-                <p>
-                  {t(
-                    "Add versions of the same shot. Play them in sync,\nmark a moment, and choose what to keep.",
-                    "导入同一镜头的不同版本，同步播放。\n标记关键时刻，选出要留下的那一条。",
-                  )}
-                </p>
-                <button
-                  className="button primary"
-                  onClick={() => setDialog("import")}
-                >
-                  <Plus size={16} />
-                  {t("Import your first takes", "导入第一批视频")}
-                </button>
-                <button
-                  className="demo-link"
-                  disabled={!!busy}
-                  onClick={() => void loadDemo()}
-                >
-                  <Play size={13} />
-                  {t("Or explore a 9-take demo", "或体验九宫格演示")}
-                </button>
-                <small>
-                  {t(
-                    "Local files, no uploads. Demo clips are synthetic.",
-                    "本地处理，无需上传。演示为合成素材。",
-                  )}
-                </small>
+                <div className="demo-preview">
+                  <div className="empty-preview" aria-hidden="true">
+                    {[1, 4, 7].map((n) => (
+                      <img
+                        key={n}
+                        src={`${import.meta.env.BASE_URL}demo/preview-${n}.webp`}
+                        alt=""
+                      />
+                    ))}
+                  </div>
+                  <button
+                    className="demo-link"
+                    disabled={!!busy}
+                    onClick={() => void loadDemo()}
+                  >
+                    <Play size={13} />
+                    {t("Open the sample project", "打开示例项目")}
+                  </button>
+                  <small>
+                    {t(
+                      "Orbit / 9 synthetic takes / 6 seconds",
+                      "Orbit / 9 条合成素材 / 6 秒",
+                    )}
+                  </small>
+                </div>
               </div>
             )}
           </div>
