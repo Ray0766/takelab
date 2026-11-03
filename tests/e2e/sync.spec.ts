@@ -16,14 +16,55 @@ async function measure(page: Page, offsets: number[], ms = 2500) {
   return page.evaluate(
     async ({ offsets, ms }) => {
       const videos = [...document.querySelectorAll("video")];
-      const latest = videos.map(() => ({ media: NaN, at: 0 }));
+      const latest = videos.map(() => ({
+        media: NaN,
+        at: 0,
+        expected: 0,
+        submitted: 0,
+      }));
+      const events: {
+        player: number;
+        at: number;
+        media: number;
+        clock: number;
+        expected: number;
+        submitted: number;
+        processing: number;
+        presented: number;
+      }[] = [];
       const handles = videos.map(() => 0);
       const before = videos.map((v) => v.getVideoPlaybackQuality());
-      const samples: { clock: number; presented: number; age: number }[] = [];
+      const samples: {
+        clock: number;
+        presented: number;
+        age: number;
+        at: number;
+        players: {
+          clock: number;
+          media: number;
+          callbackAge: number;
+          displayAge: number;
+        }[];
+      }[] = [];
       let stopped = false;
       videos.forEach((v, i) => {
         const frame: VideoFrameRequestCallback = (now, meta) => {
-          latest[i] = { media: meta.mediaTime, at: now };
+          latest[i] = {
+            media: meta.mediaTime,
+            at: now,
+            expected: meta.expectedDisplayTime,
+            submitted: meta.presentationTime,
+          };
+          events.push({
+            player: i,
+            at: now,
+            media: meta.mediaTime,
+            clock: v.currentTime,
+            expected: meta.expectedDisplayTime,
+            submitted: meta.presentationTime,
+            processing: meta.processingDuration,
+            presented: meta.presentedFrames,
+          });
           if (!stopped) handles[i] = v.requestVideoFrameCallback(frame);
         };
         handles[i] = v.requestVideoFrameCallback(frame);
@@ -47,6 +88,13 @@ async function measure(page: Page, offsets: number[], ms = 2500) {
           clock: Math.max(...clocks) - Math.min(...clocks),
           presented: Math.max(...frames) - Math.min(...frames),
           age: Math.max(...latest.map((f) => performance.now() - f.at)),
+          at: performance.now(),
+          players: videos.map((v, i) => ({
+            clock: v.currentTime - offsets[i],
+            media: latest[i].media - offsets[i],
+            callbackAge: performance.now() - latest[i].at,
+            displayAge: performance.now() - latest[i].expected,
+          })),
         });
       }
       stopped = true;
@@ -74,6 +122,7 @@ async function measure(page: Page, offsets: number[], ms = 2500) {
           performance as Performance & { memory?: { usedJSHeapSize: number } }
         ).memory?.usedJSHeapSize,
         raw: samples,
+        frameEvents: events,
       };
     },
     { offsets, ms },
@@ -89,6 +138,8 @@ test("measure mixed-fps 1080p synchronization, offsets, pause, seek, audio, endi
     browser: browser.version(),
     resolution: "1920x1080",
     measuredAt: new Date().toISOString(),
+    gate:
+      process.env.TAKELAB_SYNC_GATE === "strict" ? "strict-p95" : "regression",
   };
   await page.goto("/");
   await page.getByTestId("video-input").setInputFiles(fixtures[0]);
@@ -254,6 +305,16 @@ test("measure mixed-fps 1080p synchronization, offsets, pause, seek, audio, endi
   for (const key of ["dual-1x", "dual-0.5x", "dual-2x", "loop"]) {
     const result = results[key] as Awaited<ReturnType<typeof measure>>;
     expect(result.samples, key).toBeGreaterThan(10);
+    const p95Target = key === "dual-2x" ? 84 : 80;
+    if (result.presented.p95Ms > p95Target)
+      info.annotations.push({
+        type: "quality-target-miss",
+        description: `${key}: ${result.presented.p95Ms.toFixed(1)} ms p95 exceeds ${p95Target} ms`,
+      });
+    if (process.env.TAKELAB_SYNC_GATE === "strict")
+      expect
+        .soft(result.presented.p95Ms, `${key}: strict quality target`)
+        .toBeLessThanOrEqual(p95Target);
     // The predeclared 80/84 ms target remains in the receipt, including misses.
     // Guard functional regressions separately from host/compositor-sensitive p95.
     expect(result.clock.p95Ms, key).toBeLessThanOrEqual(100);

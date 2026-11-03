@@ -6,12 +6,26 @@ export const demoUrl = (name: string) =>
 export async function sourceFor(
   take: Take,
 ): Promise<{ url: string; release: () => void } | null> {
-  const blob = await readMedia(take.id);
-  if (blob) {
-    const url = URL.createObjectURL(blob);
-    return { url, release: () => URL.revokeObjectURL(url) };
+  let blob = await readMedia(take.id);
+  if (!blob && take.demo) {
+    // Some static hosts ignore Range requests. Fetch the small bundled fixture
+    // once per mounted player so demo seeking follows the same Blob path as imports.
+    const controller = new AbortController();
+    const timer = setTimeout(() => controller.abort(), 15000);
+    try {
+      const response = await fetch(demoUrl(take.demo), {
+        signal: controller.signal,
+      });
+      if (!response.ok)
+        throw new Error(`Demo source unavailable: ${take.demo}`);
+      blob = await response.blob();
+    } finally {
+      clearTimeout(timer);
+    }
   }
-  return take.demo ? { url: demoUrl(take.demo), release: () => {} } : null;
+  if (!blob) return null;
+  const url = URL.createObjectURL(blob);
+  return { url, release: () => URL.revokeObjectURL(url) };
 }
 export function inspectVideo(
   file: File,

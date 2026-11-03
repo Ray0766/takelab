@@ -7,6 +7,7 @@ This repository builds a static app. Publishing source, creating a GitHub Releas
 1. Use a clean checkout with Node.js 22.12+ and run `npm ci`.
 2. Run `npm run format:check`, `npm run check`, and `npm run test:e2e` after installing the matching Playwright Chromium browser.
 3. Test a representative real clip from your own workflow locally: import, sync at the target resolution, marker, backup, restore, export and play the result. The automated suite uses small synthetic clips; it does not certify nine concurrent 4K decoders on every GPU/browser.
+   For the declared 1080p synchronization target, install FFmpeg and run `npm run test:sync` on the intended machine. This uses three trials and fails on any p95 target miss; keep failing receipts rather than rerunning until green. It does not certify other hardware or frame-locked playback.
 4. Build with `npm run build` and serve `dist/` over HTTP. Check a repository subpath when using Pages.
 5. Check the source tree for secrets, private prompts/recordings, personal filesystem paths and accidental `node_modules`, test-output or build artifacts. Original demo MP4s and the UI screenshot are intentional tracked assets.
 6. Update the version, changelog, compatibility notes and screenshots when behavior changes.

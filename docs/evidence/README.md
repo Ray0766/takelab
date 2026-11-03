@@ -7,3 +7,5 @@ Start with [the validation receipt](../VALIDATION.md), [selection record](record
 `sync-before.json` is the original baseline. `sync-after-run2.json` retains the corrected-build run that missed the 80 ms p95 target. `sync-after.json` is the final run. Do not omit the failed-target receipt when summarizing results.
 
 Images and video are actual app/test exports, not design mockups. Video IDs match the records. Generated files are excluded from formatting to preserve original output.
+
+Follow-up: `sync-followup-20261103.zip` contains all six diagnostic/strict-gate raw runs; `sync-followup-summary.json` is their readable summary. These runs preceded the bundled-demo fix and did not change the playback controller. `static-host-before.png` and `static-host-after.png` document the separate no-byte-range demo seek failure and fix. See the [release follow-up](../RELEASE_CHECK_2026-11-03.md).

@@ -74,7 +74,7 @@ npm run test:e2e              # Real playback, files, persistence and exports
 npm run format:check
 ```
 
-Optional mixed-FPS 1080p benchmark (requires FFmpeg): `node scripts/generate-sync-fixtures.mjs`, then `npx playwright test tests/e2e/sync.spec.ts`. It records media clocks, presented-frame callbacks and dropped-frame counts. Without generated fixtures this host benchmark is skipped; the normal workflow suite still checks bundled video playback.
+Optional mixed-FPS 1080p release gate (requires FFmpeg): `npm run test:sync`. It generates fixtures and runs three trials, **failing if any trial misses the original 80 ms p95 target (84 ms at 2×)**. Per-player clock, frame-callback, expected-display and drop data are retained under `.local/sync-gate/`. Normal `npm run test:e2e` checks regression bounds and annotates stricter target misses; without generated fixtures it skips the host benchmark. A passing ordinary suite is not proof of the stricter synchronization target.
 
 On Linux, install the browser's OS dependencies with `npx playwright install --with-deps chromium`. Browser tests use an isolated profile and the included synthetic clips. A retained HTML report is written to `playwright-report/`.
 

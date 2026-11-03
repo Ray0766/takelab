@@ -1,5 +1,9 @@
 # Quality integration validation · 2026-11-03
 
+Latest continuation: [strict synchronization gate and clean-install/static-host verification](RELEASE_CHECK_2026-11-03.md). It retains six diagnostic/gate trials and fixes demo seeking on hosts without HTTP byte-range support. Earlier measurements below remain historical evidence, including the missed 80 ms target.
+
+Latest final check: **29 unit tests and 12 browser tests passed (44.9 seconds for the browser suite)**, production build and formatting passed. The strict three-trial gate passed separately, and three production workflows passed on the independent clean-install build served by a plain static server.
+
 Remote `589d202` was merged into the implementation as `f959d19`; existing code and README documentation were retained. The working tree was clean before merging. No push, remote CI or deployment was performed.
 
 ## Current result

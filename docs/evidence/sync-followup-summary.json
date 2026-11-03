@@ -1,0 +1,721 @@
+{
+  "date": "2026-11-03",
+  "sourceCommit": "1d8e601",
+  "runtimeCodeChanged": false,
+  "runs": [
+    {
+      "group": "sync-diagnostic",
+      "run": "sync-measure-mixed-fps-108-17a09--seek-audio-ending-and-loop",
+      "browser": "156.0.8078.4",
+      "measuredAt": "2026-11-03T05:56:20.961Z",
+      "gate": "regression",
+      "scenarios": {
+        "dual-1x": {
+          "samples": 52,
+          "clock": {
+            "p95Ms": 0.2389999999998782,
+            "maxMs": 1.9649999999999945
+          },
+          "presented": {
+            "p95Ms": 41.6669999999999,
+            "maxMs": 58.33300000000019
+          },
+          "target": {
+            "targetP95Ms": 80,
+            "met": true
+          },
+          "callbackAgeMaxMs": 99.50000001192075,
+          "frames": [
+            {
+              "decoded": 73,
+              "dropped": 0
+            },
+            {
+              "decoded": 91,
+              "dropped": 0
+            }
+          ]
+        },
+        "dual-0.5x": {
+          "samples": 52,
+          "clock": {
+            "p95Ms": 0.9470000000000312,
+            "maxMs": 0.9900000000000464
+          },
+          "presented": {
+            "p95Ms": 41.66600000000009,
+            "maxMs": 41.6669999999999
+          },
+          "target": {
+            "targetP95Ms": 80,
+            "met": true
+          },
+          "callbackAgeMaxMs": 125.50000003576315,
+          "frames": [
+            {
+              "decoded": 36,
+              "dropped": 0
+            },
+            {
+              "decoded": 45,
+              "dropped": 0
+            }
+          ]
+        },
+        "dual-2x": {
+          "samples": 33,
+          "clock": {
+            "p95Ms": 9.500999999999982,
+            "maxMs": 9.935999999999723
+          },
+          "presented": {
+            "p95Ms": 50.00000000000027,
+            "maxMs": 66.66700000000003
+          },
+          "target": {
+            "targetP95Ms": 84,
+            "met": true
+          },
+          "callbackAgeMaxMs": 48.40000002384113,
+          "frames": [
+            {
+              "decoded": 95,
+              "dropped": 1
+            },
+            {
+              "decoded": 118,
+              "dropped": 16
+            }
+          ]
+        },
+        "loop": {
+          "samples": 23,
+          "clock": {
+            "p95Ms": 22.885000000000044,
+            "maxMs": 23.095000000000088
+          },
+          "presented": {
+            "p95Ms": 49.99999999999982,
+            "maxMs": 58.33300000000019
+          },
+          "target": {
+            "targetP95Ms": 80,
+            "met": true
+          },
+          "callbackAgeMaxMs": 89.00000004768299,
+          "frames": [
+            {
+              "decoded": 36,
+              "dropped": 0
+            },
+            {
+              "decoded": 45,
+              "dropped": 0
+            }
+          ]
+        }
+      },
+      "seekSettleMs": 145,
+      "presentedSeekSettleMs": 154,
+      "pausedPresentedTimes": [
+        2,
+        2.5
+      ]
+    },
+    {
+      "group": "sync-diagnostic",
+      "run": "sync-measure-mixed-fps-108-17a09--seek-audio-ending-and-loop-repeat1",
+      "browser": "156.0.8078.4",
+      "measuredAt": "2026-11-03T05:56:37.227Z",
+      "gate": "regression",
+      "scenarios": {
+        "dual-1x": {
+          "samples": 51,
+          "clock": {
+            "p95Ms": 0.04499999999996174,
+            "maxMs": 1.9929999999999115
+          },
+          "presented": {
+            "p95Ms": 58.33299999999997,
+            "maxMs": 58.33399999999989
+          },
+          "target": {
+            "targetP95Ms": 80,
+            "met": true
+          },
+          "callbackAgeMaxMs": 100.6000000357626,
+          "frames": [
+            {
+              "decoded": 72,
+              "dropped": 0
+            },
+            {
+              "decoded": 90,
+              "dropped": 0
+            }
+          ]
+        },
+        "dual-0.5x": {
+          "samples": 52,
+          "clock": {
+            "p95Ms": 0.0810000000000255,
+            "maxMs": 0.3729999999999567
+          },
+          "presented": {
+            "p95Ms": 33.333000000000055,
+            "maxMs": 41.66600000000009
+          },
+          "target": {
+            "targetP95Ms": 80,
+            "met": true
+          },
+          "callbackAgeMaxMs": 118.59999998807871,
+          "frames": [
+            {
+              "decoded": 36,
+              "dropped": 0
+            },
+            {
+              "decoded": 45,
+              "dropped": 0
+            }
+          ]
+        },
+        "dual-2x": {
+          "samples": 33,
+          "clock": {
+            "p95Ms": 9.157999999999777,
+            "maxMs": 9.56099999999993
+          },
+          "presented": {
+            "p95Ms": 58.33399999999989,
+            "maxMs": 58.333999999999996
+          },
+          "target": {
+            "targetP95Ms": 84,
+            "met": true
+          },
+          "callbackAgeMaxMs": 47.20000003576206,
+          "frames": [
+            {
+              "decoded": 94,
+              "dropped": 1
+            },
+            {
+              "decoded": 118,
+              "dropped": 16
+            }
+          ]
+        },
+        "loop": {
+          "samples": 24,
+          "clock": {
+            "p95Ms": 15.368999999999966,
+            "maxMs": 15.610000000000124
+          },
+          "presented": {
+            "p95Ms": 50.00000000000004,
+            "maxMs": 66.6669999999998
+          },
+          "target": {
+            "targetP95Ms": 80,
+            "met": true
+          },
+          "callbackAgeMaxMs": 72.20000003576206,
+          "frames": [
+            {
+              "decoded": 37,
+              "dropped": 0
+            },
+            {
+              "decoded": 46,
+              "dropped": 0
+            }
+          ]
+        }
+      },
+      "seekSettleMs": 137,
+      "presentedSeekSettleMs": 146,
+      "pausedPresentedTimes": [
+        2,
+        2.5
+      ]
+    },
+    {
+      "group": "sync-diagnostic",
+      "run": "sync-measure-mixed-fps-108-17a09--seek-audio-ending-and-loop-repeat2",
+      "browser": "156.0.8078.4",
+      "measuredAt": "2026-11-03T05:56:53.441Z",
+      "gate": "regression",
+      "scenarios": {
+        "dual-1x": {
+          "samples": 52,
+          "clock": {
+            "p95Ms": 0.018000000000073513,
+            "maxMs": 0.036000000000147026
+          },
+          "presented": {
+            "p95Ms": 58.33300000000019,
+            "maxMs": 83.3330000000001
+          },
+          "target": {
+            "targetP95Ms": 80,
+            "met": true
+          },
+          "callbackAgeMaxMs": 104.30000002384168,
+          "frames": [
+            {
+              "decoded": 73,
+              "dropped": 0
+            },
+            {
+              "decoded": 91,
+              "dropped": 0
+            }
+          ]
+        },
+        "dual-0.5x": {
+          "samples": 52,
+          "clock": {
+            "p95Ms": 0.5129999999999857,
+            "maxMs": 0.7319999999999549
+          },
+          "presented": {
+            "p95Ms": 41.66599999999998,
+            "maxMs": 41.66700000000001
+          },
+          "target": {
+            "targetP95Ms": 80,
+            "met": true
+          },
+          "callbackAgeMaxMs": 122.10000004768335,
+          "frames": [
+            {
+              "decoded": 36,
+              "dropped": 0
+            },
+            {
+              "decoded": 45,
+              "dropped": 0
+            }
+          ]
+        },
+        "dual-2x": {
+          "samples": 33,
+          "clock": {
+            "p95Ms": 9.630999999999945,
+            "maxMs": 10.075000000000056
+          },
+          "presented": {
+            "p95Ms": 58.33399999999989,
+            "maxMs": 66.6669999999998
+          },
+          "target": {
+            "targetP95Ms": 84,
+            "met": true
+          },
+          "callbackAgeMaxMs": 43.50000003576315,
+          "frames": [
+            {
+              "decoded": 95,
+              "dropped": 1
+            },
+            {
+              "decoded": 118,
+              "dropped": 9
+            }
+          ]
+        },
+        "loop": {
+          "samples": 23,
+          "clock": {
+            "p95Ms": 7.378999999999913,
+            "maxMs": 7.444000000000117
+          },
+          "presented": {
+            "p95Ms": 33.33400000000009,
+            "maxMs": 66.66699999999992
+          },
+          "target": {
+            "targetP95Ms": 80,
+            "met": true
+          },
+          "callbackAgeMaxMs": 100.90000004768444,
+          "frames": [
+            {
+              "decoded": 36,
+              "dropped": 0
+            },
+            {
+              "decoded": 47,
+              "dropped": 0
+            }
+          ]
+        }
+      },
+      "seekSettleMs": 146,
+      "presentedSeekSettleMs": 158,
+      "pausedPresentedTimes": [
+        2,
+        2.5
+      ]
+    },
+    {
+      "group": "sync-gate",
+      "run": "sync-measure-mixed-fps-108-17a09--seek-audio-ending-and-loop",
+      "browser": "156.0.8078.4",
+      "measuredAt": "2026-11-03T06:01:09.907Z",
+      "gate": "strict-p95",
+      "scenarios": {
+        "dual-1x": {
+          "samples": 44,
+          "clock": {
+            "p95Ms": 0.2420000000000755,
+            "maxMs": 1.0990000000000721
+          },
+          "presented": {
+            "p95Ms": 50.00000000000027,
+            "maxMs": 58.33299999999997
+          },
+          "target": {
+            "targetP95Ms": 80,
+            "met": true
+          },
+          "callbackAgeMaxMs": 72.5000000357627,
+          "frames": [
+            {
+              "decoded": 72,
+              "dropped": 0
+            },
+            {
+              "decoded": 91,
+              "dropped": 0
+            }
+          ]
+        },
+        "dual-0.5x": {
+          "samples": 44,
+          "clock": {
+            "p95Ms": 0.05599999999994498,
+            "maxMs": 0.06700000000003925
+          },
+          "presented": {
+            "p95Ms": 33.333999999999975,
+            "maxMs": 41.66599999999998
+          },
+          "target": {
+            "targetP95Ms": 80,
+            "met": true
+          },
+          "callbackAgeMaxMs": 119.49999998807834,
+          "frames": [
+            {
+              "decoded": 36,
+              "dropped": 0
+            },
+            {
+              "decoded": 45,
+              "dropped": 0
+            }
+          ]
+        },
+        "dual-2x": {
+          "samples": 31,
+          "clock": {
+            "p95Ms": 8.996000000000004,
+            "maxMs": 9.074000000000026
+          },
+          "presented": {
+            "p95Ms": 49.99999999999982,
+            "maxMs": 66.66600000000011
+          },
+          "target": {
+            "targetP95Ms": 84,
+            "met": true
+          },
+          "callbackAgeMaxMs": 37.59999998807871,
+          "frames": [
+            {
+              "decoded": 97,
+              "dropped": 2
+            },
+            {
+              "decoded": 121,
+              "dropped": 5
+            }
+          ]
+        },
+        "loop": {
+          "samples": 21,
+          "clock": {
+            "p95Ms": 8.770999999999972,
+            "maxMs": 9.799999999999919
+          },
+          "presented": {
+            "p95Ms": 33.333999999999975,
+            "maxMs": 33.33400000000009
+          },
+          "target": {
+            "targetP95Ms": 80,
+            "met": true
+          },
+          "callbackAgeMaxMs": 67.80000002384259,
+          "frames": [
+            {
+              "decoded": 36,
+              "dropped": 0
+            },
+            {
+              "decoded": 46,
+              "dropped": 0
+            }
+          ]
+        }
+      },
+      "seekSettleMs": 147,
+      "presentedSeekSettleMs": 154,
+      "pausedPresentedTimes": [
+        2,
+        2.5
+      ]
+    },
+    {
+      "group": "sync-gate",
+      "run": "sync-measure-mixed-fps-108-17a09--seek-audio-ending-and-loop-repeat1",
+      "browser": "156.0.8078.4",
+      "measuredAt": "2026-11-03T06:01:26.464Z",
+      "gate": "strict-p95",
+      "scenarios": {
+        "dual-1x": {
+          "samples": 44,
+          "clock": {
+            "p95Ms": 0.016999999999933735,
+            "maxMs": 0.04700000000001925
+          },
+          "presented": {
+            "p95Ms": 41.6669999999999,
+            "maxMs": 41.66700000000001
+          },
+          "target": {
+            "targetP95Ms": 80,
+            "met": true
+          },
+          "callbackAgeMaxMs": 83.79999997615823,
+          "frames": [
+            {
+              "decoded": 73,
+              "dropped": 1
+            },
+            {
+              "decoded": 92,
+              "dropped": 0
+            }
+          ]
+        },
+        "dual-0.5x": {
+          "samples": 44,
+          "clock": {
+            "p95Ms": 0.058000000000058005,
+            "maxMs": 0.08499999999994623
+          },
+          "presented": {
+            "p95Ms": 33.33400000000009,
+            "maxMs": 41.66700000000001
+          },
+          "target": {
+            "targetP95Ms": 80,
+            "met": true
+          },
+          "callbackAgeMaxMs": 120.19999999999982,
+          "frames": [
+            {
+              "decoded": 36,
+              "dropped": 0
+            },
+            {
+              "decoded": 45,
+              "dropped": 0
+            }
+          ]
+        },
+        "dual-2x": {
+          "samples": 31,
+          "clock": {
+            "p95Ms": 9.552999999999923,
+            "maxMs": 9.893999999999625
+          },
+          "presented": {
+            "p95Ms": 50.00000000000027,
+            "maxMs": 58.33300000000019
+          },
+          "target": {
+            "targetP95Ms": 84,
+            "met": true
+          },
+          "callbackAgeMaxMs": 49.80000001192093,
+          "frames": [
+            {
+              "decoded": 95,
+              "dropped": 1
+            },
+            {
+              "decoded": 118,
+              "dropped": 11
+            }
+          ]
+        },
+        "loop": {
+          "samples": 20,
+          "clock": {
+            "p95Ms": 8.575,
+            "maxMs": 8.575
+          },
+          "presented": {
+            "p95Ms": 33.33400000000009,
+            "maxMs": 33.33400000000009
+          },
+          "target": {
+            "targetP95Ms": 80,
+            "met": true
+          },
+          "callbackAgeMaxMs": 60.700000011920565,
+          "frames": [
+            {
+              "decoded": 36,
+              "dropped": 0
+            },
+            {
+              "decoded": 47,
+              "dropped": 0
+            }
+          ]
+        }
+      },
+      "seekSettleMs": 156,
+      "presentedSeekSettleMs": 164,
+      "pausedPresentedTimes": [
+        2,
+        2.5
+      ]
+    },
+    {
+      "group": "sync-gate",
+      "run": "sync-measure-mixed-fps-108-17a09--seek-audio-ending-and-loop-repeat2",
+      "browser": "156.0.8078.4",
+      "measuredAt": "2026-11-03T06:01:43.082Z",
+      "gate": "strict-p95",
+      "scenarios": {
+        "dual-1x": {
+          "samples": 43,
+          "clock": {
+            "p95Ms": 0.18399999999996197,
+            "maxMs": 4.815000000000014
+          },
+          "presented": {
+            "p95Ms": 25.000000000000135,
+            "maxMs": 58.33299999999997
+          },
+          "target": {
+            "targetP95Ms": 80,
+            "met": true
+          },
+          "callbackAgeMaxMs": 86.90000003576279,
+          "frames": [
+            {
+              "decoded": 73,
+              "dropped": 0
+            },
+            {
+              "decoded": 91,
+              "dropped": 0
+            }
+          ]
+        },
+        "dual-0.5x": {
+          "samples": 45,
+          "clock": {
+            "p95Ms": 0.064000000000064,
+            "maxMs": 5.967999999999973
+          },
+          "presented": {
+            "p95Ms": 33.333999999999975,
+            "maxMs": 41.66599999999998
+          },
+          "target": {
+            "targetP95Ms": 80,
+            "met": true
+          },
+          "callbackAgeMaxMs": 120.20000001192057,
+          "frames": [
+            {
+              "decoded": 36,
+              "dropped": 0
+            },
+            {
+              "decoded": 45,
+              "dropped": 0
+            }
+          ]
+        },
+        "dual-2x": {
+          "samples": 30,
+          "clock": {
+            "p95Ms": 8.991999999999667,
+            "maxMs": 9.047999999999945
+          },
+          "presented": {
+            "p95Ms": 41.66700000000034,
+            "maxMs": 50.00000000000027
+          },
+          "target": {
+            "targetP95Ms": 84,
+            "met": true
+          },
+          "callbackAgeMaxMs": 41.69999998807907,
+          "frames": [
+            {
+              "decoded": 94,
+              "dropped": 0
+            },
+            {
+              "decoded": 117,
+              "dropped": 1
+            }
+          ]
+        },
+        "loop": {
+          "samples": 21,
+          "clock": {
+            "p95Ms": 8.671000000000095,
+            "maxMs": 8.685999999999972
+          },
+          "presented": {
+            "p95Ms": 33.333999999999975,
+            "maxMs": 33.33400000000009
+          },
+          "target": {
+            "targetP95Ms": 80,
+            "met": true
+          },
+          "callbackAgeMaxMs": 59.899999999999636,
+          "frames": [
+            {
+              "decoded": 37,
+              "dropped": 0
+            },
+            {
+              "decoded": 48,
+              "dropped": 0
+            }
+          ]
+        }
+      },
+      "seekSettleMs": 154,
+      "presentedSeekSettleMs": 161,
+      "pausedPresentedTimes": [
+        2,
+        2.5
+      ]
+    }
+  ]
+}

@@ -2,6 +2,9 @@
 
 ## Unreleased — traceable decisions and playback reliability
 
+- Make bundled demo seeking work on static hosts without HTTP byte-range support by reusing Blob playback and cleanup.
+- Add a strict three-trial 1080p synchronization gate, per-player timing receipts and a pause/marker-position regression.
+
 - Bind each winner to a written reason and explicit timestamp evidence from any candidate in its shot; retain stable source/marker IDs in reports and backups.
 - Revisit filtered-out evidence, open the winner's generation record, and show incomplete decisions. Clear stale links when winners or sources change.
 - Reject mismatched relink files instead of attaching old observations to different footage.
