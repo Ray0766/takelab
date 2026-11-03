@@ -88,3 +88,10 @@ See [the release checklist](docs/RELEASING.md) before publishing. Regenerating d
 Use [GitHub Issues](https://github.com/Ray0766/takelab/issues) for a concrete use case or reproducible problem. Share synthetic/public sample files and remove private prompts or client footage first. For vulnerabilities, see [SECURITY.md](SECURITY.md).
 
 Source code and original demo artwork are under the [MIT license](LICENSE). Third-party libraries retain their own licenses; see [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md). Your imported media remains yours.
+欢迎通过 Issues 提供具体使用场景、期望流程或可复现样例。请使用虚构或可公开分享的样例文件。
+
+## Agent guidance / 开发规范
+
+Before implementation, read [AGENTS.md](AGENTS.md) and the [project quality brief](docs/QUALITY_BRIEF.md) for research, differentiation, design references, and acceptance criteria.
+
+后续 Agent 开发前，请先阅读上述工作规范与项目 brief；先验证技术选择和核心亮点，再完成设计、实现与验收。
