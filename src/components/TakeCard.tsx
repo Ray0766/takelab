@@ -21,6 +21,7 @@ export function TakeCard({
   blind,
   transport,
   select,
+  inspect,
   verdict,
   relink,
   revision,
@@ -32,6 +33,7 @@ export function TakeCard({
   blind: boolean;
   transport: Transport;
   select: () => void;
+  inspect: () => void;
   verdict: (value: Verdict) => void;
   relink: () => void;
   revision: number;
@@ -127,7 +129,10 @@ export function TakeCard({
           className="take-select"
           aria-label={t(`Inspect ${label}`, `查看 ${label}`)}
           aria-pressed={active}
-          onClick={select}
+          onClick={(e) => {
+            e.stopPropagation();
+            inspect();
+          }}
         >
           <span className="take-letter">{label.split(" · ")[0]}</span>
         </button>

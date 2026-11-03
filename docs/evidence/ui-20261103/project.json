@@ -1,0 +1,75 @@
+{
+  "schemaVersion": 1,
+  "id": "15844080-4083-4db4-ad5c-e6c6a547b6cc",
+  "name": "Untitled project",
+  "createdAt": "2026-11-03T06:35:06.419Z",
+  "updatedAt": "2026-11-03T06:35:07.062Z",
+  "fps": 24,
+  "shots": [
+    {
+      "id": "b133c846-b7d6-4e79-9bf5-f7380abf3a91",
+      "name": "Shot 01",
+      "decision": {
+        "takeId": "7363c39a-d42d-4131-9c47-9ff0ea5cf073",
+        "reason": "Take 07 maintains steady lighting; Take 04 flickers at 3 seconds.",
+        "evidence": [
+          {
+            "takeId": "d1fe2412-0786-4376-934a-4a35beb87169",
+            "markerId": "2efe6d44-fff5-424d-9556-13d21e42f184"
+          }
+        ]
+      }
+    }
+  ],
+  "takes": [
+    {
+      "id": "d1fe2412-0786-4376-934a-4a35beb87169",
+      "shotId": "b133c846-b7d6-4e79-9bf5-f7380abf3a91",
+      "name": "orbit-04.mp4",
+      "size": 33405,
+      "lastModified": 1793669331894,
+      "type": "video/mp4",
+      "duration": 6,
+      "width": 640,
+      "height": 360,
+      "offset": 0,
+      "verdict": "rejected",
+      "model": "",
+      "prompt": "Synthetic test fixture: orbital view with a midpoint light flicker.",
+      "negativePrompt": "",
+      "seed": "",
+      "settings": "",
+      "cost": null,
+      "markers": [
+        {
+          "id": "2efe6d44-fff5-424d-9556-13d21e42f184",
+          "time": 3,
+          "kind": "issue",
+          "text": "Midpoint light flicker interrupts the shot."
+        }
+      ],
+      "references": []
+    },
+    {
+      "id": "7363c39a-d42d-4131-9c47-9ff0ea5cf073",
+      "shotId": "b133c846-b7d6-4e79-9bf5-f7380abf3a91",
+      "name": "orbit-07.mp4",
+      "size": 27869,
+      "lastModified": 1793669332860,
+      "type": "video/mp4",
+      "duration": 6,
+      "width": 640,
+      "height": 360,
+      "offset": 0,
+      "verdict": "winner",
+      "model": "",
+      "prompt": "Synthetic test fixture: balanced orbital light and camera movement.",
+      "negativePrompt": "",
+      "seed": "",
+      "settings": "",
+      "cost": null,
+      "markers": [],
+      "references": []
+    }
+  ]
+}

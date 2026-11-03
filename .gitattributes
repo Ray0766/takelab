@@ -1,5 +1,8 @@
 * text=auto eol=lf
 *.mp4 binary
 *.png binary
+*.webp binary
+*.webm binary
 # Preserve the verbatim production-record export, including its trailing lines.
 docs/evidence/record.md whitespace=-blank-at-eof
+docs/evidence/ui-20261103/record.md whitespace=-blank-at-eof

@@ -31,6 +31,8 @@ Open [localhost:4173](http://127.0.0.1:4173/), then choose **Or explore a 9-take
 4. Press **M** to leave a note at the current source time.
 5. Open **Decision**, write a reason and link supporting markers, including flaws in rejected candidates. Reveal the generation record and export the result.
 
+**Details** folds away the record panel for more comparison space. **Add marker** reopens it at the current source time. The [interface design notes](docs/UI_REDESIGN_2026-11-03.md) document the visual references, research rationale and untested assumptions.
+
 ## What works
 
 | Workflow          | v0.1 behavior                                                                                                                |

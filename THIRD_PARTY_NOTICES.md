@@ -15,3 +15,5 @@ Runtime libraries:
 Exact dependency versions are locked in `package-lock.json`. `public/THIRD_PARTY_LICENSES.txt` includes the runtime license texts for static distributions and is regenerated before each build. The WebM duration packages omit license files in their npm tarballs; their upstream MIT license is preserved in `scripts/licenses/fix-webm-duration.txt` (upstream blob `755aa25107512b5889967746d75788e9ee2f0164`). Other texts are copied from the installed packages. Build/test tools retain their respective licenses. FFmpeg, Pillow and NumPy are only needed to regenerate demo assets and are not distributed inside the app.
 
 All bundled `public/demo/orbit-*.mp4` clips are original algorithmic artwork made by `scripts/generate_demo.py`. Their model labels are fictional. No stock footage, generative-service output, external fonts or external photos are bundled.
+
+The `public/demo/preview-*.webp` images are frames from these same clips, extracted at 2.8 seconds by the demo generator. External design references are linked in the decision log; their artwork, fonts and code are not bundled.

@@ -53,9 +53,12 @@ export function DecisionPanel({
       aria-label={t("Shot decision", "镜头选片依据")}
     >
       <div className="decision-winner">
-        <small>{t("SELECTED FOR THIS SHOT", "本镜头选定版本")}</small>
+        <small>{t("Selected for this shot", "本镜头选定版本")}</small>
         <strong>{winner.name}</strong>
-        <code title={winner.id}>ID {winner.id}</code>
+        <details className="decision-id">
+          <summary>{t("Source ID", "素材 ID")}</summary>
+          <code>{winner.id}</code>
+        </details>
         <button className="button subtle" onClick={() => record(winner)}>
           {t("Open winner record", "查看成片制作记录")}
         </button>
@@ -134,7 +137,7 @@ export function DecisionPanel({
               }
               onClick={() => revisit(take, marker)}
             >
-              {timecode(marker.time, fps)} · {marker.time.toFixed(3)} s →
+              {timecode(marker.time, fps)} <span>{t("Revisit", "回看")}</span>
             </button>
           </div>
         );

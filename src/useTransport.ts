@@ -82,6 +82,7 @@ export function useTransport(duration: number, fps: number) {
     active.current = playing;
     sync(current.current, playing, rate, true);
     if (!playing) {
+      setTime(current.current);
       setBuffering(false);
       return;
     }
@@ -136,11 +137,36 @@ export function useTransport(duration: number, fps: number) {
     if (current.current > duration) seek(duration);
     if (!duration) setPlaying(false);
   }, [duration, seek]);
+  const pause = useCallback(() => {
+    // Freeze the actual media position before publishing the final readout.
+    // Playback updates the UI at 25 Hz; a pause can fall between those updates.
+    if (active.current) {
+      const leader = [...players.current.values()]
+        .filter(
+          (p) => !p.video.error && p.video.readyState >= 2 && !p.video.seeking,
+        )
+        .sort((a, b) => b.duration - b.offset - (a.duration - a.offset))[0];
+      if (leader)
+        current.current = clamp(
+          leader.video.currentTime - leader.offset,
+          0,
+          durationRef.current,
+        );
+    }
+    active.current = false;
+    sync(current.current, false, rate, true);
+    setTime(current.current);
+    setPlaying(false);
+  }, [rate, sync]);
   const toggle = useCallback(() => {
     if (durationRef.current <= 0) return;
+    if (active.current) {
+      pause();
+      return;
+    }
     if (current.current >= durationRef.current) seek(0);
-    setPlaying((v) => !v);
-  }, [seek]);
+    setPlaying(true);
+  }, [pause, seek]);
   const step = useCallback(
     (direction: number) => {
       setPlaying(false);
@@ -161,11 +187,7 @@ export function useTransport(duration: number, fps: number) {
     toggle,
     step,
     register,
-    pause: () => {
-      active.current = false;
-      for (const p of players.current.values()) p.video.pause();
-      setPlaying(false);
-    },
+    pause,
   };
 }
 export type Transport = ReturnType<typeof useTransport>;

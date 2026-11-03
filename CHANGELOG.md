@@ -2,6 +2,10 @@
 
 ## Unreleased — traceable decisions and playback reliability
 
+- Rework the interface around a light tool surface and neutral viewing area, with quieter shot navigation, larger previews and a collapsible record panel. Remove decorative project statistics and promotional UI copy.
+- Preserve player instances while details are hidden; reopen and focus the marker composer from playback controls. Keep previews legible in short windows.
+- Freeze the actual media clock and publish the final time on pause, fixing a readout that could lag by one nominal frame between UI updates.
+
 - Make bundled demo seeking work on static hosts without HTTP byte-range support by reusing Blob playback and cleanup.
 - Add a strict three-trial 1080p synchronization gate, per-player timing receipts and a pause/marker-position regression.
 

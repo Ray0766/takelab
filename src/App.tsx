@@ -2,13 +2,11 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import type { CSSProperties } from "react";
 import {
   ArrowDownToLine,
-  ArrowRight,
   Check,
   CheckCheck,
   ChevronDown,
   ChevronLeft,
   ChevronRight,
-  CircleHelp,
   Clapperboard,
   Copy,
   Download,
@@ -16,7 +14,6 @@ import {
   EyeOff,
   FileArchive,
   FileText,
-  Film,
   Flag,
   FolderOpen,
   Grid2X2,
@@ -37,7 +34,6 @@ import {
   SkipBack,
   SkipForward,
   SlidersHorizontal,
-  Sparkles,
   Star,
   Trash2,
   Upload,
@@ -113,6 +109,7 @@ export default function App() {
   const [filter, setFilter] = useState("all");
   const [search, setSearch] = useState("");
   const [hideRejected, setHideRejected] = useState(false);
+  const [inspectorOpen, setInspectorOpen] = useState(true);
   const [inspectorTab, setInspectorTab] = useState<
     "record" | "markers" | "decision"
   >("record");
@@ -581,6 +578,7 @@ export default function App() {
   };
   const focusMarker = () => {
     transport.pause();
+    setInspectorOpen(true);
     setInspectorTab("markers");
     setTimeout(() => markerInput.current?.focus(), 0);
   };
@@ -701,16 +699,6 @@ export default function App() {
         <span>{t("Opening your desk…", "正在打开工作台…")}</span>
       </main>
     );
-  const totalCost = project.takes.reduce(
-    (sum, take) => sum + (take.cost || 0),
-    0,
-  );
-  const reviewCount = shotTakes.filter(
-    (take) => take.verdict !== "unreviewed",
-  ).length;
-  const recordedCosts = project.takes.filter(
-    (take) => take.cost !== null,
-  ).length;
   return (
     <div
       className="app"
@@ -799,7 +787,6 @@ export default function App() {
             <Clapperboard size={22} strokeWidth={2.2} />
           </span>
           <strong>TakeLab</strong>
-          <span className="version">0.1</span>
         </a>
         <div className="project-heading">
           <span className="top-divider" />
@@ -854,7 +841,10 @@ export default function App() {
         </button>
       </header>
 
-      <div className="workbench" inert={!!busy}>
+      <div
+        className={`workbench ${inspectorOpen && selected ? "" : "inspector-closed"}`}
+        inert={!!busy}
+      >
         <aside className="sidebar">
           <div className="sidebar-heading">
             <span>{t("Shots", "镜头")}</span>
@@ -919,37 +909,15 @@ export default function App() {
             {t("Add footage", "添加素材")}
           </button>
           <div className="sidebar-bottom">
-            <div className="project-stats">
-              <span>{t("Project overview", "项目概览")}</span>
-              <div>
-                <span>{t("Total takes", "全部版本")}</span>
-                <strong>{project.takes.length}</strong>
-              </div>
-              <div>
-                <span>{t("Selected", "已选定")}</span>
-                <strong>
-                  {
-                    project.takes.filter((take) => take.verdict === "winner")
-                      .length
-                  }
-                  <small> / {project.shots.length}</small>
-                </strong>
-              </div>
-              {!blind && (
-                <div>
-                  <span>{t("Recorded cost", "已记录成本")}</span>
-                  <strong>
-                    {recordedCosts ? `$${totalCost.toFixed(2)}` : "—"}
-                  </strong>
-                </div>
-              )}
-            </div>
             <div className="local-note">
-              <ShieldCheck size={16} />
+              <HardDrive size={15} />
               <span>
-                {t("Your footage stays yours.", "素材始终属于你。")}
+                {t("Stored on this device", "保存在这台设备")}
                 <small>
-                  {t("Local files. No uploads.", "本地处理，无需上传。")}
+                  {formatBytes(
+                    project.takes.reduce((sum, take) => sum + take.size, 0),
+                  )}{" "}
+                  {t("of video", "视频素材")}
                 </small>
               </span>
             </div>
@@ -964,11 +932,6 @@ export default function App() {
         <main className="main-panel">
           <section className="shot-header">
             <div>
-              <div className="breadcrumb">
-                {t("Workspace", "工作台")}
-                <ChevronRight size={11} />
-                {t("Compare takes", "比较版本")}
-              </div>
               <div className="shot-title">
                 <input
                   aria-label={t("Shot name", "镜头名称")}
@@ -1000,34 +963,20 @@ export default function App() {
                   </button>
                 )}
               </div>
-              <p>
-                {shotTakes.length
-                  ? t(
-                      "Find the take that tells your story.",
-                      "让最合适的版本，进入你的故事。",
-                    )
-                  : t(
-                      "Every good shot starts with a few possibilities.",
-                      "每一个好镜头，都从几种可能开始。",
-                    )}
-              </p>
             </div>
-            <div className="review-progress">
-              <span>
-                {reviewCount}
-                <small> / {shotTakes.length}</small>
-              </span>
-              <small>{t("reviewed", "已评选")}</small>
-              <div>
-                <i
-                  style={{
-                    width: `${shotTakes.length ? (reviewCount / shotTakes.length) * 100 : 0}%`,
-                  }}
-                />
-              </div>
-            </div>
+            <button
+              className="button details-toggle"
+              hidden={!selected}
+              disabled={!selected}
+              aria-expanded={inspectorOpen && !!selected}
+              aria-controls="take-inspector"
+              onClick={() => setInspectorOpen(!inspectorOpen)}
+            >
+              <SlidersHorizontal size={16} />
+              {t("Details", "详情")}
+            </button>
           </section>
-          <div className="compare-toolbar">
+          <div className="compare-toolbar" hidden={!shotTakes.length}>
             <div
               className="filter-tabs"
               role="group"
@@ -1047,6 +996,27 @@ export default function App() {
                 <Star size={12} />
                 {t("Shortlist", "入围")}
               </button>
+            </div>
+            <div className="view-filters">
+              <label className="hide-rejected">
+                <input
+                  type="checkbox"
+                  checked={hideRejected}
+                  onChange={(e) => setHideRejected(e.target.checked)}
+                />
+                {t("Hide rejected", "隐藏淘汰")}
+              </label>
+              {!blind && (
+                <label className="take-search">
+                  <Search size={12} />
+                  <input
+                    aria-label={t("Search takes", "搜索版本")}
+                    placeholder={t("Find take…", "查找版本…")}
+                    value={search}
+                    onChange={(e) => setSearch(e.target.value)}
+                  />
+                </label>
+              )}
             </div>
             <div className="compare-options">
               <button
@@ -1102,40 +1072,6 @@ export default function App() {
               </button>
             </div>
           )}
-          {shotTakes.length > 0 && (
-            <div className="grid-meta">
-              <span>
-                <span className="sync-dot" />
-                {transport.buffering
-                  ? t("Waiting for video…", "正在等待视频…")
-                  : t("Synchronized playback", "同步播放")}
-                <small>
-                  {visible.length} {t("on screen", "条同屏")}
-                </small>
-              </span>
-              <div>
-                <label className="hide-rejected">
-                  <input
-                    type="checkbox"
-                    checked={hideRejected}
-                    onChange={(e) => setHideRejected(e.target.checked)}
-                  />
-                  {t("Hide rejected", "隐藏淘汰")}
-                </label>
-                {!blind && (
-                  <label className="take-search">
-                    <Search size={12} />
-                    <input
-                      aria-label={t("Search takes", "搜索版本")}
-                      placeholder={t("Find take…", "查找版本…")}
-                      value={search}
-                      onChange={(e) => setSearch(e.target.value)}
-                    />
-                  </label>
-                )}
-              </div>
-            </div>
-          )}
           <div className="grid-scroller">
             {visible.length ? (
               <div
@@ -1159,6 +1095,10 @@ export default function App() {
                       blind={blind}
                       transport={transport}
                       select={() => setSelectedId(take.id)}
+                      inspect={() => {
+                        setSelectedId(take.id);
+                        setInspectorOpen(true);
+                      }}
                       verdict={(value) => verdict(take.id, value)}
                       revision={revision}
                       t={t}
@@ -1186,18 +1126,20 @@ export default function App() {
               </div>
             ) : (
               <div className="empty-state">
-                <div className="empty-frames">
-                  <span />
-                  <span>
-                    <Film size={42} strokeWidth={1} />
-                  </span>
-                  <span />
+                <div className="empty-preview" aria-hidden="true">
+                  {[1, 4, 7].map((n) => (
+                    <img
+                      key={n}
+                      src={`${import.meta.env.BASE_URL}demo/preview-${n}.webp`}
+                      alt=""
+                    />
+                  ))}
                 </div>
-                <h2>{t("A better take is in there.", "好版本，就在其中。")}</h2>
+                <h2>{t("Compare a few takes.", "把几个版本，放在一起看。")}</h2>
                 <p>
                   {t(
-                    "Drop your videos here. Play them together.\nKeep the one that feels right.",
-                    "把视频拖到这里，同步播放、逐一比较。\n留下最合适的那一条。",
+                    "Add versions of the same shot. Play them in sync,\nmark a moment, and choose what to keep.",
+                    "导入同一镜头的不同版本，同步播放。\n标记关键时刻，选出要留下的那一条。",
                   )}
                 </p>
                 <button
@@ -1214,12 +1156,11 @@ export default function App() {
                 >
                   <Play size={13} />
                   {t("Or explore a 9-take demo", "或体验九宫格演示")}
-                  <ArrowRight size={13} />
                 </button>
                 <small>
                   {t(
-                    "MP4, WebM, MOV* · Files never leave your device",
-                    "MP4、WebM、MOV* · 文件不会离开你的设备",
+                    "Local files, no uploads. Demo clips are synthetic.",
+                    "本地处理，无需上传。演示为合成素材。",
                   )}
                 </small>
               </div>
@@ -1262,6 +1203,7 @@ export default function App() {
           )}
           <section
             className="transport"
+            hidden={!shotTakes.length}
             aria-label={t("Playback controls", "播放控制")}
           >
             <div className="transport-main">
@@ -1393,7 +1335,12 @@ export default function App() {
             <div className="transport-foot">
               <span>
                 <Layers size={11} />
-                {t("All visible takes linked", "已关联全部可见版本")}
+                {transport.buffering
+                  ? t("Waiting for video…", "正在等待视频…")
+                  : t(
+                      `${visible.length} takes linked`,
+                      `${visible.length} 条同步播放`,
+                    )}
                 <i />
                 {t("Shorter takes hold their last frame", "较短版本停留在末帧")}
               </span>
@@ -1417,18 +1364,24 @@ export default function App() {
           </section>
         </main>
 
-        <aside className="inspector">
+        <aside
+          className="inspector"
+          id="take-inspector"
+          hidden={!inspectorOpen || !selected}
+        >
           <div className="inspector-heading">
-            <span>
-              <SlidersHorizontal size={14} />
-              {t("Take inspector", "版本详情")}
-            </span>
+            <span>{t("Notes & record", "标记与记录")}</span>
             <button
               className="icon-button"
-              aria-label={t("Help", "帮助")}
-              onClick={() => setDialog("help")}
+              aria-label={t("Close details", "收起详情")}
+              onClick={() => {
+                setInspectorOpen(false);
+                document
+                  .querySelector<HTMLButtonElement>(".details-toggle")
+                  ?.focus();
+              }}
             >
-              <CircleHelp size={15} />
+              <X size={16} />
             </button>
           </div>
           {selected ? (
@@ -1518,9 +1471,7 @@ export default function App() {
                   blind ? (
                     <div className="blind-inspector">
                       <EyeOff size={28} />
-                      <h3>
-                        {t("Let the footage speak.", "先看画面，再看来源。")}
-                      </h3>
+                      <h3>{t("Source details hidden", "来源信息已隐藏")}</h3>
                       <p>
                         {t(
                           "Model, prompt, references and cost are hidden while you compare.",
@@ -1925,7 +1876,7 @@ export default function App() {
           ) : (
             <div className="inspector-empty">
               <SlidersHorizontal size={28} />
-              <p>{t("The story behind the take.", "留下好版本背后的方法。")}</p>
+              <p>{t("No take selected", "尚未选择版本")}</p>
               <span>
                 {t(
                   "Select a video to see its prompt, references and review notes.",
@@ -1936,33 +1887,10 @@ export default function App() {
           )}
         </aside>
       </div>
-      <footer className="statusbar">
-        <span>
-          <span className="local-dot" />
-          {t("Local workspace", "本地工作台")}
-          <i />
-          {formatBytes(
-            project.takes.reduce((sum, take) => sum + take.size, 0),
-          )}{" "}
-          {t("imported", "已导入")}
-        </span>
-        <span>
-          {t("Space to play", "空格 播放")}
-          <i />← → {t("frame by frame", "逐帧")}
-          <i />
-          1–9 {t("inspect take", "选择版本")}
-          <button
-            aria-label={t("Keyboard shortcuts", "键盘快捷键")}
-            onClick={() => setDialog("help")}
-          >
-            <Keyboard size={12} />
-          </button>
-        </span>
-      </footer>
       {dragging && (
         <div className="drop-overlay">
           <Upload size={40} />
-          <h2>{t("Drop your next possibilities.", "放下素材，开始比较。")}</h2>
+          <h2>{t("Add videos to this shot", "添加视频到当前镜头")}</h2>
           <p>
             {autoGroup
               ? t("Group by filename", "按文件名分组")
@@ -2070,7 +1998,7 @@ export default function App() {
               <ChevronRight size={15} />
             </button>
             <button disabled={!!busy} onClick={() => void loadDemo()}>
-              <Sparkles size={20} />
+              <Play size={20} />
               <span>
                 <strong>{t("Explore the demo", "体验演示项目")}</strong>
                 <small>
